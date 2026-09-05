@@ -116,6 +116,60 @@
 }
 
 /* ---------------------------------------------------------------
+   Hero diagram: extended animations
+   --------------------------------------------------------------- */
+
+/* Teal dots travel input → agent; gold dots travel agent → output */
+.flow-dot {
+  animation: flow-travel 2.8s linear infinite;
+}
+
+@keyframes flow-travel {
+  0%   { opacity: 0; offset-distance: 0%; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { opacity: 0; offset-distance: 100%; }
+}
+
+/* Expanding ring radiates from the agent node */
+.agent-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ring-expand 2.5s ease-out infinite;
+}
+
+@keyframes ring-expand {
+  0%   { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* Gold sparkline draws once after traces finish */
+.sparkline {
+  stroke-dasharray: var(--spark-len, 230);
+  stroke-dashoffset: var(--spark-len, 230);
+}
+
+.in .sparkline {
+  animation: spark-draw 1.2s var(--ease-brand) forwards;
+  animation-delay: 1.6s;
+}
+
+@keyframes spark-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Endpoint label fades in after sparkline finishes drawing */
+.spark-label {
+  opacity: 0;
+}
+
+.in .spark-label {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  transition-delay: 2.9s;
+}
+
+/* ---------------------------------------------------------------
    Accessibility
    --------------------------------------------------------------- */
 
@@ -139,5 +193,22 @@
   .live-dot::after {
     animation: none;
     opacity: 0;
+  }
+
+  .flow-dot,
+  .agent-ring {
+    display: none;
+  }
+
+  .sparkline,
+  .in .sparkline {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .spark-label,
+  .in .spark-label {
+    opacity: 1;
+    transition: none;
   }
 }

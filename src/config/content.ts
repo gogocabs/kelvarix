@@ -3,11 +3,11 @@
 export const hero = {
   status: "Agents on shift",
   eyebrow: "AI operations studio",
-  headline: ["Your business,", "run by one tireless agent."],
-  lead: "Kelvarix absorbs the busywork — the follow-ups, the chasing, the copy-paste — and does it inside the tools you already use. Ten desks of chaos, handled by one calm machine.",
+  headline: ["Your business,", "run by Kelvarix agents."],
+  lead: "Kelvarix agents absorb the busywork — the follow-ups, the chasing, the copy-paste — and do it inside the tools you already use. Ten desks of chaos, managed automatically.",
   primaryCta: "Map my busiest workflow",
   secondaryCta: "See what it takes over",
-  footnote: "Free 30-minute call · one workflow, one KPI, fixed scope",
+  footnote: "One 30-minute call · 10× your business improvement",
 } as const;
 
 /** Channels the agent covers, drawn as the hero's circuit diagram. */
@@ -21,46 +21,20 @@ export const channels = [
 ] as const;
 
 export const operations = [
-  {
-    pain: "Leads sitting unread till Monday",
-    outcome: "Every enquiry scored, routed and replied in seconds",
-    stat: "<60s response",
-  },
-  {
-    pain: "Chasing follow-ups and bookings",
-    outcome: "Agent follows up, books the calendar, logs it in your CRM",
-    stat: "0 leads dropped",
-  },
-  {
-    pain: "Calls with no notes or next step",
-    outcome: "Calls answered, transcribed, requirements extracted",
-    stat: "100% captured",
-  },
-  {
-    pain: "Invoices generated and chased by hand",
-    outcome: "Auto-generated, sent, reminded and reconciled",
-    stat: "−80% admin hours",
-  },
-  {
-    pain: "WhatsApp inbox chaos",
-    outcome: "Intent classified — auto-replied or escalated with context",
-    stat: "24/7 coverage",
-  },
-  {
-    pain: "Tier-1 support eating the day",
-    outcome: "Resolved instantly; clean handoff with full transcript",
-    stat: "−60% ticket load",
-  },
-  {
-    pain: "Copy-paste between five tools",
-    outcome: "CRM, calendar, inbox and sheets stay in sync on their own",
-    stat: "0 double-entry",
-  },
-  {
-    pain: "No idea what the numbers say",
-    outcome: "A plain-English daily digest — risks flagged, wins listed",
-    stat: "1 glance / day",
-  },
+  { icon: "mail",         pain: "Leads sitting unread till Monday",       outcome: "Every enquiry scored, routed and replied in seconds",                       stat: "<60s response"    },
+  { icon: "calendar",     pain: "Chasing follow-ups and bookings",        outcome: "Agent follows up, books the calendar, logs it in your CRM",                stat: "0 leads dropped"  },
+  { icon: "phone",        pain: "Calls with no notes or next step",       outcome: "Calls answered, transcribed, requirements extracted",                       stat: "100% captured"    },
+  { icon: "file-text",    pain: "Invoices generated and chased by hand",  outcome: "Auto-generated, sent, reminded and reconciled",                            stat: "−80% admin hours" },
+  { icon: "message",      pain: "WhatsApp inbox chaos",                   outcome: "Intent classified — auto-replied or escalated with context",                stat: "24/7 coverage"    },
+  { icon: "headphones",   pain: "Tier-1 support eating the day",          outcome: "Resolved instantly; clean handoff with full transcript",                    stat: "−60% ticket load" },
+  { icon: "refresh",      pain: "Copy-paste between five tools",          outcome: "CRM, calendar, inbox and sheets stay in sync on their own",                 stat: "0 double-entry"   },
+  { icon: "bar-chart",    pain: "No idea what the numbers say",           outcome: "A plain-English daily digest — risks flagged, wins listed",                stat: "1 glance / day"   },
+  { icon: "credit-card",  pain: "Paying per invoice on a SaaS tool",      outcome: "Custom invoice system built to your exact workflow, owned by you",         stat: "−70% tool cost"   },
+  { icon: "mic",          pain: "Call recordings never analysed",         outcome: "AI extracts insights, trends and actions from every recording",             stat: "100% analysed"    },
+  { icon: "database",     pain: "Paying for a CRM that doesn't fit",      outcome: "Custom CRM built to your data model — no seats, no lock-in",               stat: "−60% CRM cost"    },
+  { icon: "trending-up",  pain: "Website not converting visitors",        outcome: "Clean, fast, conversion-optimised redesign — shipped in weeks",             stat: "2× conversion"    },
+  { icon: "search",       pain: "SEO / GEO / AEO flying blind",           outcome: "Automated system tracks rankings and reports changes daily",                stat: "0 blind spots"    },
+  { icon: "eye",          pain: "Competitor research done by hand",       outcome: "Agent monitors competitors and delivers structured reports automatically",  stat: "0 manual scans"   },
 ] as const;
 
 export const steps = [
@@ -141,8 +115,8 @@ export const faqs = [
     a: "Every agent ships with explicit escalation rules: anything sensitive, uncertain or out-of-scope goes to a human with full context. You set the boundaries in the blueprint.",
   },
   {
-    q: "Do we need to change our tools?",
-    a: "No. We wire into what you already use — CRM, calendar, inbox, WhatsApp, sheets — through native integrations and APIs.",
+    q: "Do you wire existing tools or build new ones?",
+    a: "Both. We wire into what you already use — CRM, calendar, inbox, WhatsApp, sheets — through native integrations and APIs. Where no tool fits, we build one for you. Either way, the goal is the same: your operations run faster and fully automated.",
   },
   {
     q: "How fast do we see results?",
