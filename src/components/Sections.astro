@@ -1,0 +1,125 @@
+---
+import { operations, steps, industries, faqs, site } from "../config/site";
+---
+<section id="operations" class="border-b border-hairline">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+    <p class="reveal text-xs font-bold uppercase tracking-widest text-accent">01 — Operations we take over</p>
+    <h2 class="reveal font-display mt-2 max-w-xl text-3xl md:text-4xl font-semibold tracking-tight">The busywork your team hates? Hand it over.</h2>
+    <div class="reveal mt-8 divide-y divide-hairline border-y border-hairline">
+      {operations.map((o) => (
+        <div class="grid gap-1 py-4 md:grid-cols-[1fr_1.2fr_auto] md:items-center md:gap-6">
+          <p class="text-muted line-through decoration-accent/50">😮‍💨 {o.pain}</p>
+          <p class="font-medium">→ {o.outcome}</p>
+          <span class="w-fit rounded-full bg-cream px-3 py-1 text-xs font-bold text-accent-deep">{o.stat}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section id="how" class="border-b border-hairline bg-cream/60">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+    <p class="reveal text-xs font-bold uppercase tracking-widest text-accent">02 — How it works</p>
+    <h2 class="reveal font-display mt-2 text-3xl md:text-4xl font-semibold tracking-tight">Story → blueprint → 24/7 machine.</h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-3">
+      {steps.map((s) => (
+        <article class="reveal rounded-2xl border border-hairline bg-paper p-6">
+          <p class="font-display text-4xl font-semibold text-accent/30">{s.n}</p>
+          <h3 class="mt-2 font-display text-xl font-semibold">{s.title}</h3>
+          <p class="mt-2 text-sm text-muted">{s.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="border-b border-hairline bg-ink text-paper">
+  <div class="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-5 py-12 md:grid-cols-4">
+    {[["10×","output on the same headcount"],["24/7","coverage — nights, weekends, holidays"],["−60%","operating cost on repeat work"],["0 days","training time. It ships trained"]].map((m) => (
+      <div class="reveal"><p class="font-display text-4xl md:text-5xl font-semibold text-orange-300">{m[0]}</p><p class="mt-1 text-sm text-paper/60">{m[1]}</p></div>
+    ))}
+  </div>
+</section>
+
+<section id="industries" class="border-b border-hairline">
+  <div class="mx-auto max-w-6xl px-5 py-16 md:py-20">
+    <p class="reveal text-xs font-bold uppercase tracking-widest text-accent">03 — Industries</p>
+    <h2 class="reveal font-display mt-2 text-3xl md:text-4xl font-semibold tracking-tight">What your agent would actually do.</h2>
+    <div class="reveal mt-8 flex flex-wrap gap-2" role="tablist" aria-label="Industries" id="indTabs">
+      {industries.map((ind, i) => (
+        <button role="tab" aria-selected={i === 0 ? "true" : "false"} data-i={i} class="ind-tab rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors">{ind.name}</button>
+      ))}
+    </div>
+    <div class="mt-4">
+      {industries.map((ind, i) => (
+        <ul data-panel={i} class:list={["ind-panel rounded-2xl border border-hairline bg-white p-6 space-y-3", { hidden: i !== 0 }]}>
+          {ind.points.map((p) => <li class="flex gap-3"><span class="font-bold text-accent">✓</span><span>{p}</span></li>)}
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="border-b border-hairline bg-cream/60">
+  <div class="mx-auto max-w-3xl px-5 py-16 md:py-20">
+    <p class="reveal text-xs font-bold uppercase tracking-widest text-accent">04 — Fair questions</p>
+    <h2 class="reveal font-display mt-2 text-3xl md:text-4xl font-semibold tracking-tight">Sceptical? Good.</h2>
+    <div class="mt-8 space-y-3">
+      {faqs.map((f) => (
+        <details class="reveal group rounded-xl border border-hairline bg-paper px-5 py-4 open:shadow-sm">
+          <summary class="cursor-pointer font-semibold list-none flex justify-between gap-4">{f.q}<span class="text-accent group-open:rotate-45 transition-transform">+</span></summary>
+          <p class="mt-2 text-sm text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="border-b border-hairline">
+  <div class="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-2 md:py-20">
+    <div class="reveal">
+      <p class="text-xs font-bold uppercase tracking-widest text-accent">05 — Start here</p>
+      <h2 class="font-display mt-2 text-3xl md:text-4xl font-semibold tracking-tight">Bring us your busiest workflow.</h2>
+      <p class="mt-4 text-muted">Tell us how work gets done today. We'll reply within 24 hours with honest first thoughts — even if the answer is "don't automate this yet."</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href={site.whatsapp} target="_blank" rel="noopener" class="rounded-full bg-[#1faa55] px-6 py-3 text-sm font-semibold text-white">Chat on WhatsApp</a>
+        <a href={`mailto:${site.email}`} class="rounded-full border border-ink/20 px-6 py-3 text-sm font-semibold hover:border-ink">Email us</a>
+      </div>
+    </div>
+    <form id="contactForm" class="reveal rounded-2xl border border-hairline bg-white p-6 space-y-4">
+      <label class="block text-sm font-medium">Your name<input name="name" required placeholder="Jane Patel" class="mt-1 w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 outline-none focus:border-accent" /></label>
+      <label class="block text-sm font-medium">Business<input name="business" placeholder="Patel Realty" class="mt-1 w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 outline-none focus:border-accent" /></label>
+      <label class="block text-sm font-medium">Email<input name="email" type="email" required placeholder="you@company.com" class="mt-1 w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 outline-none focus:border-accent" /></label>
+      <label class="block text-sm font-medium">What's eating your week?<textarea name="message" rows="4" required placeholder="e.g. We miss weekend enquiries and invoicing takes Fridays…" class="mt-1 w-full rounded-lg border border-hairline bg-paper px-3 py-2.5 outline-none focus:border-accent"></textarea></label>
+      <button class="w-full rounded-full bg-accent py-3.5 font-semibold text-white hover:bg-accent-deep transition-colors">Send → get your workflow map</button>
+      <p id="formNote" class="hidden text-sm text-green-700">Opening your email app with everything filled in…</p>
+    </form>
+  </div>
+</section>
+
+<footer class="mx-auto max-w-6xl px-5 py-10 flex flex-wrap items-center gap-4 justify-between">
+  <p class="font-display text-lg font-bold">Kelvarix<span class="text-accent">.</span> <span class="font-sans text-sm font-normal text-muted">AI agents doing the busywork.</span></p>
+  <p class="text-sm text-muted">© {site.year} {site.name}. All rights reserved.</p>
+</footer>
+
+<script>
+  const tabs = [...document.querySelectorAll(".ind-tab")];
+  const panels = [...document.querySelectorAll(".ind-panel")];
+  const paint = (active: number) => tabs.forEach((t, i) => {
+    const on = i === active;
+    t.setAttribute("aria-selected", String(on));
+    t.className = "ind-tab rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors " + (on ? "bg-ink text-paper border-ink" : "border-hairline bg-white hover:border-ink");
+    panels[i].classList.toggle("hidden", !on);
+  });
+  tabs.forEach((t) => t.addEventListener("click", () => paint(Number((t as HTMLElement).dataset.i))));
+  paint(0);
+
+  document.getElementById("contactForm")?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(e.target as HTMLFormElement));
+    const subject = encodeURIComponent(`Kelvarix inquiry — ${d.business || d.name}`);
+    const body = encodeURIComponent(`Name: ${d.name}\nBusiness: ${d.business || "-"}\nEmail: ${d.email}\n\n${d.message}`);
+    document.getElementById("formNote")?.classList.remove("hidden");
+    location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
+  });
+</script>

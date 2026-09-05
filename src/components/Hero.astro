@@ -1,0 +1,68 @@
+---
+import { site } from "../config/site";
+const ticker = ["Leads answered in seconds", "Invoices chase themselves", "No lead left till Monday", "Calls summarised automatically", "WhatsApp triaged 24/7", "Reports in plain English"];
+---
+<section id="top" class="hero-sun border-b border-hairline overflow-hidden">
+  <div class="mx-auto max-w-6xl px-5 pt-14 md:pt-20 pb-10 text-center">
+    <div class="reveal in flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
+      <span class="sticker rounded-full border-2 border-ink bg-gold px-4 py-1.5 uppercase tracking-widest">● Live — agents on shift</span>
+      <span class="sticker rounded-full border-2 border-ink bg-white px-4 py-1.5 uppercase tracking-widest">AI operations studio</span>
+    </div>
+    <h1 class="reveal in font-display mx-auto mt-6 max-w-4xl text-[2.9rem] leading-[0.98] md:text-7xl font-extrabold tracking-tight">
+      Your business,<br />run by <span class="scribble">one tireless agent<svg viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 60 6, 150 4, 296 12" fill="none" stroke="#c2410c" stroke-width="7" stroke-linecap="round"/></svg></span>
+    </h1>
+    <p class="reveal in mx-auto mt-6 max-w-xl text-lg text-muted">Kelvarix absorbs the busywork — the follow-ups, the chasing, the copy-paste — and does it inside the tools you already use. Ten desks of chaos, handled by one calm machine.</p>
+    <div class="reveal in mt-8 flex flex-wrap justify-center gap-3">
+      <a href="#contact" class="sticker rounded-full border-2 border-ink bg-accent px-8 py-4 font-bold text-white hover:bg-accent-deep transition-colors">Map my busiest workflow →</a>
+      <a href="#operations" class="sticker rounded-full border-2 border-ink bg-white px-8 py-4 font-bold hover:bg-cream transition-colors">See it eat busywork</a>
+    </div>
+    <p class="mt-4 text-xs font-semibold uppercase tracking-widest text-muted">Free 30-min call · one workflow, one KPI · ★★★★★ from busy owners</p>
+  </div>
+
+  <!-- Illustrated agent console -->
+  <div class="reveal in mx-auto max-w-5xl px-5 pb-4">
+    <div class="sticker relative rounded-3xl border-2 border-ink bg-ink text-paper p-5 md:p-8 overflow-hidden">
+      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-paper/60">
+        <span class="live-dot inline-block h-2.5 w-2.5 rounded-full bg-green-400"></span> Kelvarix console — Thursday, handling 6 jobs at once
+      </div>
+      <div class="mt-5 grid gap-6 md:grid-cols-[1fr_1.1fr] items-center">
+        <!-- SVG: one robot octopus serving many channels -->
+        <svg viewBox="0 0 320 260" class="mx-auto w-full max-w-[320px]" role="img" aria-label="One agent juggling leads, calls, invoices and inbox">
+          <g font-family="Inter,sans-serif" font-size="10" font-weight="700">
+            <line x1="160" y1="120" x2="40" y2="50" stroke="#eab308" stroke-width="2.5" class="flow-line"/>
+            <line x1="160" y1="120" x2="280" y2="50" stroke="#eab308" stroke-width="2.5" class="flow-line"/>
+            <line x1="160" y1="120" x2="40" y2="200" stroke="#eab308" stroke-width="2.5" class="flow-line"/>
+            <line x1="160" y1="120" x2="280" y2="200" stroke="#eab308" stroke-width="2.5" class="flow-line"/>
+            <line x1="160" y1="120" x2="160" y2="30" stroke="#eab308" stroke-width="2.5" class="flow-line"/>
+            <line x1="160" y1="120" x2="160" y2="225" stroke="#eab308" stroke-width="2.5" class="flow-line"/>
+            <g><rect x="6" y="34" width="68" height="32" rx="10" fill="#faf6ef"/><text x="40" y="54" text-anchor="middle" fill="#201409">📞 calls</text></g>
+            <g><rect x="246" y="34" width="68" height="32" rx="10" fill="#faf6ef"/><text x="280" y="54" text-anchor="middle" fill="#201409">💬 chats</text></g>
+            <g><rect x="6" y="184" width="68" height="32" rx="10" fill="#faf6ef"/><text x="40" y="204" text-anchor="middle" fill="#201409">🧾 invoices</text></g>
+            <g><rect x="246" y="184" width="68" height="32" rx="10" fill="#faf6ef"/><text x="280" y="204" text-anchor="middle" fill="#201409">📥 inbox</text></g>
+            <g><rect x="118" y="12" width="84" height="32" rx="10" fill="#faf6ef"/><text x="160" y="32" text-anchor="middle" fill="#201409">🎯 leads</text></g>
+            <g><rect x="118" y="210" width="84" height="32" rx="10" fill="#faf6ef"/><text x="160" y="230" text-anchor="middle" fill="#201409">📊 reports</text></g>
+            <rect x="112" y="72" width="96" height="96" rx="26" fill="#c2410c" stroke="#eab308" stroke-width="4"/>
+            <circle cx="142" cy="112" r="9" fill="#faf6ef"/><circle cx="178" cy="112" r="9" fill="#faf6ef"/>
+            <circle cx="144" cy="113" r="3.5" fill="#201409"/><circle cx="176" cy="113" r="3.5" fill="#201409"/>
+            <rect x="140" y="134" width="40" height="10" rx="5" fill="#eab308"/>
+            <rect x="100" y="66" width="34" height="14" rx="7" fill="#1faa55"/><text x="117" y="76" text-anchor="middle" fill="#fff" font-size="9">24/7</text>
+          </g>
+        </svg>
+        <!-- live feed -->
+        <div class="space-y-2.5 text-sm">
+          <div class="floaty rounded-xl bg-white/10 px-4 py-3" style="--tilt:-.5deg"><span class="font-bold text-green-300">✓ Booked</span> — Priya's viewing moved to Tue 10:30, reminder set <span class="opacity-50">· now</span></div>
+          <div class="floaty rounded-xl bg-white/10 px-4 py-3" style="--tilt:.5deg;animation-delay:-1.5s"><span class="font-bold text-green-300">✓ Chased</span> — invoice #1042 nudged politely, 2nd reminder <span class="opacity-50">· 2m</span></div>
+          <div class="floaty rounded-xl bg-white/10 px-4 py-3" style="--tilt:-.5deg;animation-delay:-3s"><span class="font-bold text-gold">◐ Escalated</span> — tricky refund → you, with full transcript <span class="opacity-50">· 6m</span></div>
+          <div class="floaty rounded-xl border border-gold/60 bg-gold/15 px-4 py-3 font-semibold" style="--tilt:.5deg;animation-delay:-4s">☕ Your team? Drinking chai. Doing real work.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- marquee -->
+  <div class="mt-6 overflow-hidden border-y-2 border-ink bg-gold py-3" aria-hidden="true">
+    <div class="marquee-track flex w-max gap-8 whitespace-nowrap font-display font-bold">
+      {[...ticker, ...ticker].map((t) => <span>✦ {t}</span>)}
+    </div>
+  </div>
+</section>
