@@ -1,0 +1,102 @@
+---
+/**
+ * Paper surface by design: the wordmark artwork is navy #173B57, so the header
+ * keeps the logo on its intended off-white background instead of recolouring it.
+ *
+ * Nav shows inline from md. Below that it collapses into a disclosure menu so
+ * section links stay reachable on phones.
+ */
+import Container from "./Container.astro";
+import Logo from "../brand/Logo.astro";
+import Button from "../ui/Button.astro";
+import { navLinks } from "../../config/site";
+
+const link =
+  "text-sm font-medium text-slate transition-colors hover:text-navy-800";
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-hairline bg-paper/85 backdrop-blur-md"
+  data-header
+>
+  <Container class="flex h-20 items-center gap-6">
+    <a href="#top" class="shrink-0" aria-label="Kelvarix — home">
+      <Logo size={38} />
+    </a>
+
+    <nav class="ml-auto hidden items-center gap-6 md:flex lg:gap-8" aria-label="Primary">
+      {navLinks.map((l) => <a href={l.href} class={link}>{l.label}</a>)}
+    </nav>
+
+    <!-- Wrapper, not a `hidden` class on the Button: its base `inline-flex`
+         would win the display conflict. -->
+    <div class="hidden md:block">
+      <Button href="#contact">Book a consult</Button>
+    </div>
+
+    <button
+      type="button"
+      class="-mr-2 ml-auto grid size-10 shrink-0 place-items-center rounded-full text-navy-800 md:hidden"
+      aria-label="Menu"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      data-menu-toggle
+    >
+      <span class="relative block h-3 w-5" aria-hidden="true">
+        <span
+          class="absolute inset-x-0 top-0 h-0.5 rounded-full bg-current transition-transform duration-200"
+          data-bar-top></span>
+        <span
+          class="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-current transition-transform duration-200"
+          data-bar-bottom></span>
+      </span>
+    </button>
+  </Container>
+
+  <nav
+    id="mobile-nav"
+    class="hidden border-t border-hairline bg-paper md:hidden"
+    aria-label="Primary"
+    data-mobile-nav
+  >
+    <Container class="flex flex-col py-2 pb-5">
+      {
+        navLinks.map((l) => (
+          <a href={l.href} class={`${link} border-b border-hairline py-3.5`}>
+            {l.label}
+          </a>
+        ))
+      }
+      <Button href="#contact" class="mt-5">Book a consult</Button>
+    </Container>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const panel = document.querySelector<HTMLElement>("[data-mobile-nav]");
+  const top = document.querySelector<HTMLElement>("[data-bar-top]");
+  const bottom = document.querySelector<HTMLElement>("[data-bar-bottom]");
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      panel.classList.toggle("hidden", !open);
+      // Bars fold into an X without needing extra elements.
+      top?.style.setProperty("transform", open ? "translateY(5px) rotate(45deg)" : "");
+      bottom?.style.setProperty("transform", open ? "translateY(-5px) rotate(-45deg)" : "");
+    };
+
+    toggle.addEventListener("click", () =>
+      setOpen(toggle.getAttribute("aria-expanded") !== "true"),
+    );
+
+    // Close after choosing a destination, and on Escape.
+    panel.addEventListener("click", (event) => {
+      if ((event.target as HTMLElement).closest("a")) setOpen(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setOpen(false);
+    });
+  }
+</script>

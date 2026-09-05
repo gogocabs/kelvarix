@@ -1,0 +1,59 @@
+/* Kelvarix design tokens — see DESIGN.md.
+   Brand hexes are sampled directly from public/brand/*.png; do not invent hues. */
+
+@theme {
+  /* ---- Brand core (sampled from the logo artwork) ---- */
+  --color-navy: #173b57; /* wordmark + mark navy */
+  --color-gold: #d9a441; /* the "x" */
+  --color-teal: #1c8c8c; /* circuit nodes */
+  --color-slate: #5b7285; /* "VALUE, REALIZED" */
+  --color-paper: #fcfcfb; /* logo background */
+
+  /* ---- Derived surfaces (tints/shades of the core, no new hues) ---- */
+  --color-navy-900: #0e2740;
+  --color-navy-800: #173b57;
+  --color-navy-700: #1e4a69;
+  --color-navy-600: #2a5b7d;
+  --color-paper-dim: #f2f1ec;
+
+  /* ---- Derived accents, contrast-tuned per surface ---- */
+  --color-gold-600: #be8b2e; /* gold hover on light */
+  --color-teal-600: #16706f; /* teal text on light (5.7:1) */
+  --color-teal-400: #2aa8a8; /* teal text on dark (5.1:1) */
+  --color-slate-600: #475968; /* small muted text on light (7.0:1 / 6.3:1 on dim) */
+  --color-slate-300: #a8bacb; /* muted text on dark (7.3:1) */
+
+  /* ---- Lines ---- */
+  --color-hairline: rgb(23 59 87 / 0.12);
+  --color-hairline-dark: rgb(168 186 203 / 0.16);
+
+  /* ---- Type ---- */
+  --font-display: "Poppins", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.1;
+  --text-label--letter-spacing: 0.12em;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+  --text-lead: 1.1875rem;
+  --text-lead--line-height: 1.6;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.35;
+  --text-h2: 2rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.02em;
+  --text-display: 3.25rem;
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.03em;
+  --text-display-lg: 4.5rem;
+  --text-display-lg--line-height: 1;
+  --text-display-lg--letter-spacing: -0.035em;
+
+  /* ---- Layout ---- */
+  --container-content: 70rem; /* 1120px */
+  --container-prose: 44rem;
+
+  /* ---- Motion ---- */
+  --ease-brand: cubic-bezier(0.2, 0.7, 0.3, 1);
+}

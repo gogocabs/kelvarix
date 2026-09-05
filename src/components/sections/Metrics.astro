@@ -1,0 +1,11 @@
+---
+import Section from "../layout/Section.astro";
+import Stat from "../ui/Stat.astro";
+import { metrics } from "../../config/content";
+---
+
+<Section surface="navy" class="border-none">
+  <div class="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-4">
+    {metrics.map((m) => <Stat value={m.value} label={m.label} />)}
+  </div>
+</Section>

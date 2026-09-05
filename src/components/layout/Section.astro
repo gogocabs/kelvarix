@@ -1,0 +1,43 @@
+---
+/**
+ * A full-width band. `surface` sets the palette; the `surface-dark` class is
+ * what lets global.css flip focus rings and lets children opt into dark styling.
+ */
+import Container from "./Container.astro";
+
+interface Props {
+  id?: string;
+  surface?: "paper" | "paper-dim" | "navy" | "navy-deep";
+  width?: "content" | "prose";
+  /** Omit the container when a section manages its own layout. */
+  bare?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  surface = "paper",
+  width = "content",
+  bare = false,
+  class: className = "",
+} = Astro.props;
+
+const surfaces = {
+  paper: "bg-paper text-navy-800 border-t border-hairline",
+  "paper-dim": "bg-paper-dim text-navy-800 border-t border-hairline",
+  navy: "surface-dark bg-navy-800 text-paper",
+  "navy-deep": "surface-dark bg-navy-900 text-paper",
+} as const;
+---
+
+<section id={id} class:list={[surfaces[surface], className]}>
+  {
+    bare ? (
+      <slot />
+    ) : (
+      <Container width={width} class="py-24 md:py-32">
+        <slot />
+      </Container>
+    )
+  }
+</section>

@@ -1,0 +1,130 @@
+---
+import Container from "../layout/Container.astro";
+import Button from "../ui/Button.astro";
+import { hero, channels } from "../../config/content";
+
+/* Endpoint rows for the circuit diagram, mirroring the logomark's traces. */
+const left = [
+  { y: 70, label: "Calls" },
+  { y: 160, label: "Chats" },
+  { y: 250, label: "Invoices" },
+];
+const right = [
+  { y: 70, label: "Leads" },
+  { y: 160, label: "Inbox" },
+  { y: 250, label: "Reports" },
+];
+---
+
+<section id="top" class="surface-dark bg-navy-900 text-paper">
+  <Container class="pt-20 pb-24 md:pt-28 md:pb-32">
+    <div class="mx-auto max-w-3xl text-center">
+      <p
+        class="reveal in flex items-center justify-center gap-2.5 text-label font-semibold uppercase text-teal-400"
+      >
+        <span class="live-dot inline-block size-2 rounded-full bg-teal-400"></span>
+        {hero.status}
+        <span class="mx-1 text-slate-300/40" aria-hidden="true">/</span>
+        <span class="text-slate-300">{hero.eyebrow}</span>
+      </p>
+
+      <h1
+        class="reveal in mt-7 font-display text-display font-semibold md:text-display-lg"
+      >
+        {hero.headline[0]}<br />
+        <span class="text-gold">{hero.headline[1]}</span>
+      </h1>
+
+      <p class="reveal in mx-auto mt-7 max-w-xl text-lead text-slate-300">
+        {hero.lead}
+      </p>
+
+      <div class="reveal in mt-10 flex flex-wrap justify-center gap-3">
+        <Button href="#contact" size="lg">{hero.primaryCta}</Button>
+        <Button href="#operations" variant="ghost-dark" size="lg">
+          {hero.secondaryCta}
+        </Button>
+      </div>
+
+      <p class="mt-6 text-label font-medium uppercase text-slate-300">
+        {hero.footnote}
+      </p>
+    </div>
+
+    <!-- Below md the diagram's labels shrink past legibility, so the same
+         channels are listed as chips instead. -->
+    <ul class="reveal mt-14 flex flex-wrap justify-center gap-2 md:hidden">
+      {
+        channels.map((c) => (
+          <li class="flex items-center gap-2 rounded-full border border-hairline-dark px-3.5 py-2 text-label font-semibold uppercase text-slate-300">
+            <span class="size-1.5 rounded-full bg-teal-400" aria-hidden="true" />
+            {c}
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- One agent, many channels. Decorative: the labels are duplicated
+         in the Operations table, so the diagram is hidden from assistive tech. -->
+    <div class="reveal mt-20 hidden md:mt-24 md:block" aria-hidden="true">
+      <svg
+        viewBox="0 0 720 320"
+        class="mx-auto w-full max-w-3xl"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <g stroke="var(--color-teal)" stroke-width="2">
+          <path class="trace" style="--trace-len:260" d="M310 160 H240 L150 70 H128" />
+          <path class="trace" style="--trace-len:200" d="M310 160 H128" />
+          <path class="trace" style="--trace-len:260" d="M310 160 H240 L150 250 H128" />
+          <path class="trace" style="--trace-len:260" d="M410 160 H480 L570 70 H592" />
+          <path class="trace" style="--trace-len:200" d="M410 160 H592" />
+          <path class="trace" style="--trace-len:260" d="M410 160 H480 L570 250 H592" />
+        </g>
+
+        <g fill="var(--color-teal)">
+          {left.map((n) => <circle cx="120" cy={n.y} r="5" />)}
+          {right.map((n) => <circle cx="600" cy={n.y} r="5" />)}
+        </g>
+
+        <!-- Agent node: the mark's gold chevron over a navy body. -->
+        <rect
+          x="320"
+          y="120"
+          width="80"
+          height="80"
+          rx="22"
+          fill="var(--color-navy-700)"
+          stroke="var(--color-teal)"
+          stroke-width="2"
+        />
+        <path
+          d="M347 141 L371 160 L347 179"
+          stroke="var(--color-gold)"
+          stroke-width="9"
+        />
+        <rect x="378" y="139" width="7" height="42" rx="3.5" fill="var(--color-paper)" />
+
+        <g
+          fill="var(--color-slate-300)"
+          font-family="var(--font-sans)"
+          font-size="13"
+          font-weight="600"
+          letter-spacing="1.4"
+        >
+          {left.map((n) => (
+            <text x="104" y={n.y + 4} text-anchor="end">
+              {n.label.toUpperCase()}
+            </text>
+          ))}
+          {right.map((n) => (
+            <text x="616" y={n.y + 4}>
+              {n.label.toUpperCase()}
+            </text>
+          ))}
+        </g>
+      </svg>
+    </div>
+  </Container>
+</section>

@@ -1,43 +1,65 @@
-# Astro Starter Kit: Minimal
+# Kelvarix
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Marketing site for Kelvarix — *value, realized*. Astro 7 + Tailwind CSS 4,
+built as a static site and deployed to GitHub Pages under `/kelvarix/`.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**Read [`DESIGN.md`](./DESIGN.md) before changing anything visual.** It is the
+binding spec: sampled brand colours, type scale, component contracts and logo
+usage rules.
 
-## 🚀 Project Structure
+## Commands
 
-Inside of your Astro project, you'll see the following folders and files:
+| Command | Action |
+| :-- | :-- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Dev server at `localhost:4321` |
+| `npm run build` | Production build to `./dist/` |
+| `npm run preview` | Preview the build locally |
+| `python3 scripts/brand-assets.py` | Regenerate favicons, OG image and manifest from `public/brand/` |
+
+Dev server runs in background mode — manage it with `astro dev stop`,
+`astro dev status`, `astro dev logs`.
+
+## Structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+public/
+  brand/            canonical logos — used verbatim, never edited
+  favicon*  apple-touch-icon.png  og.png  site.webmanifest   (generated)
+src/
+  components/
+    brand/          Logo lockup
+    layout/         Header, Footer, Section, Container
+    ui/             Button, Card, Eyebrow, Stat, Accordion, Field
+    sections/       page sections, one file each
+  config/
+    site.ts         identity, nav, brand asset paths
+    content.ts      all page copy
+  layouts/Base.astro  head, SEO, OG/Twitter, JSON-LD, reveal observer
+  lib/url.ts        base-aware asset helper
+  styles/
+    tokens.css      design tokens (@theme)
+    global.css      base layer + primitives
+scripts/brand-assets.py
+DESIGN.md
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Conventions
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- **Tokens only.** No raw hex, no arbitrary Tailwind values. Add a token first.
+- **Copy lives in `src/config/content.ts`**, never inline in components.
+- **Asset paths go through `asset()`** from `src/lib/url.ts` — the site is served
+  from a sub-path, so root-absolute paths 404 in production.
+- **Logos are used as supplied.** No recolouring, no upscaling past the source
+  resolution. See `DESIGN.md` §7.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Before launch
 
-## 🧞 Commands
+`src/config/site.ts` still holds placeholder contact details:
 
-All commands are run from the root of the project, from a terminal:
+```ts
+whatsapp: "https://wa.me/910000000000",
+email: "hello@kelvarix.com",
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Replace both with the real handle and address.

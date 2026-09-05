@@ -1,0 +1,105 @@
+---
+import Section from "../layout/Section.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+import Field from "../ui/Field.astro";
+import Button from "../ui/Button.astro";
+import { site } from "../../config/site";
+import { contact } from "../../config/content";
+---
+
+<Section id="contact" surface="navy-deep" class="border-none">
+  <div class="grid gap-14 md:grid-cols-2 md:gap-20">
+    <div class="reveal">
+      <Eyebrow n="05" surface="dark">{contact.eyebrow}</Eyebrow>
+      <h2 class="mt-5 font-display text-h2 font-semibold">{contact.heading}</h2>
+      <p class="mt-5 max-w-md text-slate-300">{contact.body}</p>
+
+      <div class="mt-9 flex flex-wrap gap-3">
+        <Button href={site.whatsapp} variant="primary" external>
+          Chat on WhatsApp
+        </Button>
+        <Button href={`mailto:${site.email}`} variant="ghost-dark">
+          {site.email}
+        </Button>
+      </div>
+    </div>
+
+    <form
+      class="reveal rounded-lg border border-hairline-dark bg-paper p-6 md:p-8"
+      data-contact-form
+    >
+      <div class="space-y-5">
+        <Field
+          name="name"
+          label="Your name"
+          placeholder="Jane Patel"
+          autocomplete="name"
+          required
+        />
+        <Field
+          name="business"
+          label="Business"
+          placeholder="Patel Realty"
+          autocomplete="organization"
+        />
+        <Field
+          name="email"
+          type="email"
+          label="Email"
+          placeholder="you@company.com"
+          autocomplete="email"
+          required
+        />
+        <Field
+          name="message"
+          type="textarea"
+          label="What's eating your week?"
+          placeholder="e.g. We miss weekend enquiries and invoicing takes every Friday…"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="mt-7 w-full rounded-full bg-gold px-6 py-3.5 font-semibold text-navy-900 transition-colors hover:bg-gold-600"
+      >
+        Send — get your workflow map
+      </button>
+
+      <p
+        class="mt-3 hidden text-center text-sm text-teal-600"
+        data-form-note
+        role="status"
+      >
+        Opening your email app with everything filled in…
+      </p>
+    </form>
+  </div>
+</Section>
+
+<script define:vars={{ email: site.email }}>
+  // Static host, no backend: hand off to the visitor's mail client with the
+  // form contents pre-composed. Native validation runs first.
+  const form = document.querySelector("[data-contact-form]");
+  const note = document.querySelector("[data-form-note]");
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const get = (key) => String(data.get(key) ?? "").trim();
+
+    const subject = `Workflow map request — ${get("business") || get("name")}`;
+    const body = [
+      `Name: ${get("name")}`,
+      `Business: ${get("business") || "—"}`,
+      `Email: ${get("email")}`,
+      "",
+      get("message"),
+    ].join("\n");
+
+    note?.classList.remove("hidden");
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+  });
+</script>

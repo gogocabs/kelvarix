@@ -1,0 +1,102 @@
+---
+/**
+ * Horizontal lockup, composed in HTML from the two canonical PNGs.
+ *
+ * Nothing is redrawn, recoloured or distorted — the mark and the wordmark are
+ * simply positioned. Proportions follow the reference lockup
+ * (`kelvarix_logo_type_refined.png`): wordmark = 0.75x mark height,
+ * gap = 0.28x mark height.
+ *
+ * Both source files carry transparent padding, so each image is upscaled by its
+ * canvas/artwork ratio and negatively margined. That aligns the *artwork*
+ * optically rather than the file's empty canvas.
+ */
+import { asset } from "../../lib/url";
+import { brand, site } from "../../config/site";
+
+interface Props {
+  /** Optical height of the mark artwork in px. Source is 500px — never exceed it. */
+  size?: number;
+  variant?: "lockup" | "mark";
+  class?: string;
+}
+
+const { size = 38, variant = "lockup", class: className = "" } = Astro.props;
+
+/* Artwork bounding boxes inside each canvas, measured from the PNG alpha. */
+const MARK_ART = { w: 304, h: 328 };
+const WORDMARK_ART = { w: 695, h: 252 };
+
+const mark = {
+  box: size * (brand.markSize.h / MARK_ART.h),
+  get bleedY() {
+    return (this.box - size) / 2;
+  },
+  get bleedX() {
+    return (this.box - size * (MARK_ART.w / MARK_ART.h)) / 2;
+  },
+  get width() {
+    return size * (MARK_ART.w / MARK_ART.h);
+  },
+};
+
+const wordArtHeight = size * 0.75;
+const word = {
+  height: wordArtHeight * (brand.wordmarkSize.h / WORDMARK_ART.h),
+  get width() {
+    return this.height * (brand.wordmarkSize.w / brand.wordmarkSize.h);
+  },
+  get target() {
+    return wordArtHeight * (WORDMARK_ART.w / WORDMARK_ART.h);
+  },
+  get bleedY() {
+    return (this.height - wordArtHeight) / 2;
+  },
+  get bleedX() {
+    return (this.width - this.target) / 2;
+  },
+};
+
+const gap = size * 0.28;
+const label = `${site.name} — ${site.tagline}`;
+const px = (n: number) => `${Math.round(n * 100) / 100}px`;
+---
+
+<span
+  class:list={["inline-flex items-center", className]}
+  style={`gap:${px(gap)}`}
+>
+  <span
+    class="inline-flex shrink-0 overflow-hidden"
+    style={`width:${px(mark.width)};height:${px(size)}`}
+  >
+    <img
+      src={asset(brand.mark)}
+      alt={variant === "mark" ? label : ""}
+      width={brand.markSize.w}
+      height={brand.markSize.h}
+      class="max-w-none"
+      style={`width:${px(mark.box)};height:${px(mark.box)};margin:${px(-mark.bleedY)} ${px(-mark.bleedX)}`}
+      decoding="async"
+    />
+  </span>
+
+  {
+    variant === "lockup" && (
+      <span
+        class="inline-flex shrink-0 overflow-hidden"
+        style={`width:${px(word.target)};height:${px(wordArtHeight)}`}
+      >
+        <img
+          src={asset(brand.wordmark)}
+          alt={label}
+          width={brand.wordmarkSize.w}
+          height={brand.wordmarkSize.h}
+          class="max-w-none"
+          style={`width:${px(word.width)};height:${px(word.height)};margin:${px(-word.bleedY)} ${px(-word.bleedX)}`}
+          decoding="async"
+        />
+      </span>
+    )
+  }
+</span>

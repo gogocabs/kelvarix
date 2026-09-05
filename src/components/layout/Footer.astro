@@ -1,0 +1,46 @@
+---
+import Container from "./Container.astro";
+import Logo from "../brand/Logo.astro";
+import { site, navLinks } from "../../config/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-hairline bg-paper">
+  <Container class="py-14">
+    <div class="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+      <div>
+        <Logo size={34} />
+        <p class="mt-4 max-w-xs text-sm text-slate">
+          AI agents that absorb the busywork, inside the tools you already use.
+        </p>
+      </div>
+
+      <nav class="flex flex-wrap gap-x-8 gap-y-3" aria-label="Footer">
+        {
+          navLinks.map((l) => (
+            <a
+              href={l.href}
+              class="text-sm text-slate transition-colors hover:text-navy-800"
+            >
+              {l.label}
+            </a>
+          ))
+        }
+        <a
+          href={`mailto:${site.email}`}
+          class="text-sm text-slate transition-colors hover:text-navy-800"
+        >
+          {site.email}
+        </a>
+      </nav>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-2 border-t border-hairline pt-6 text-label uppercase text-slate sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {year} {site.name}</p>
+      <p>{site.tagline}</p>
+    </div>
+  </Container>
+</footer>

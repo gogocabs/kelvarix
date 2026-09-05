@@ -1,58 +1,143 @@
 @import "tailwindcss";
+@import "./tokens.css";
 
-@theme {
-  --color-paper: #faf6ef;
-  --color-cream: #f4e9d6;
-  --color-ink: #201409;
-  --color-muted: #7a6a58;
-  --color-accent: #c2410c;
-  --color-accent-deep: #8f2e05;
-  --color-gold: #eab308;
-  --color-leaf: #1faa55;
-  --color-hairline: #e6d9c2;
-  --font-display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-navy-800);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-navy-900);
+  }
+
+  /* Dark bands invert focus ring for visibility. */
+  .surface-dark :focus-visible {
+    outline-color: var(--color-teal-400);
+  }
 }
 
-html { scroll-behavior: smooth; }
-body { background: var(--color-paper); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+/* ---------------------------------------------------------------
+   Primitives
+   --------------------------------------------------------------- */
 
-.font-display { font-family: var(--font-display); }
+@layer components {
+  /* Reveal-on-scroll. Progressive enhancement: without JS the `in` class is
+     applied immediately by the no-js fallback below, so content is never hidden. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 220ms var(--ease-brand),
+      transform 220ms var(--ease-brand);
+  }
 
-.grain::before {
-  content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Circuit motif traced from the logomark's node-and-trace language.
+     Draws once on reveal, then stays put. */
+  .trace {
+    stroke-dasharray: var(--trace-len, 300);
+    stroke-dashoffset: var(--trace-len, 300);
+  }
+
+  .in .trace,
+  .trace.in {
+    animation: trace-draw 1.4s var(--ease-brand) forwards;
+  }
+
+  .live-dot {
+    position: relative;
+  }
+
+  .live-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background-color: currentColor;
+    animation: live-pulse 2s ease-out infinite;
+  }
 }
 
-.hero-sun {
-  background:
-    radial-gradient(560px 340px at 82% 8%, rgba(234,179,8,.35), transparent 65%),
-    radial-gradient(640px 380px at 12% 20%, rgba(194,65,12,.18), transparent 65%),
-    var(--color-paper);
+@keyframes trace-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
-.scribble { position: relative; white-space: nowrap; }
-.scribble > svg { position: absolute; left: -2%; bottom: -0.18em; width: 104%; height: 0.42em; }
+@keyframes live-pulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
 
-.sticker { box-shadow: 3px 3px 0 var(--color-ink); }
-
-@keyframes floaty { 0%,100% { transform: translateY(0) rotate(var(--tilt, 0deg)); } 50% { transform: translateY(-10px) rotate(var(--tilt, 0deg)); } }
-.floaty { animation: floaty 5s ease-in-out infinite; }
-
-@keyframes marquee { to { transform: translateX(-50%); } }
-.marquee-track { animation: marquee 26s linear infinite; }
-
-@keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-.live-dot { animation: pulse-dot 1.6s infinite; }
-
-@keyframes dash { to { stroke-dashoffset: -24; } }
-.flow-line { stroke-dasharray: 6 6; animation: dash 1.2s linear infinite; }
-
-.reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
-.reveal.in { opacity: 1; transform: none; }
+/* ---------------------------------------------------------------
+   Accessibility
+   --------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-  .floaty, .marquee-track, .live-dot, .flow-line { animation: none; }
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .trace,
+  .in .trace {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .live-dot::after {
+    animation: none;
+    opacity: 0;
+  }
 }

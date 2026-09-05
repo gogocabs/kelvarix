@@ -1,3 +1,9 @@
+## Design
+
+Read `DESIGN.md` before any visual or styling change. It is the binding spec for
+colour, type, layout, components and logo usage. Use design tokens only — no raw
+hex values and no arbitrary Tailwind values.
+
 ## Development
 
 When starting the dev server, use background mode:

@@ -1,0 +1,91 @@
+---
+import Section from "../layout/Section.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+import { industries } from "../../config/content";
+---
+
+<Section id="industries" surface="paper">
+  <div class="max-w-2xl">
+    <Eyebrow n="03">Industries</Eyebrow>
+    <h2 class="mt-5 font-display text-h2 font-semibold">
+      What your agent would actually do.
+    </h2>
+  </div>
+
+  <div class="reveal mt-12" data-industries>
+    <div
+      class="flex flex-wrap gap-2 border-b border-hairline pb-5"
+      role="tablist"
+      aria-label="Industries"
+    >
+      {
+        industries.map((ind, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`ind-tab-${i}`}
+            aria-controls={`ind-panel-${i}`}
+            aria-selected={i === 0 ? "true" : "false"}
+            tabindex={i === 0 ? 0 : -1}
+            class="rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors aria-selected:border-navy-800 aria-selected:bg-navy-800 aria-selected:text-paper border-hairline text-slate hover:text-navy-800"
+          >
+            {ind.name}
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      industries.map((ind, i) => (
+        <div
+          id={`ind-panel-${i}`}
+          role="tabpanel"
+          aria-labelledby={`ind-tab-${i}`}
+          hidden={i !== 0}
+        >
+          <ul class="mt-8 grid gap-4 md:grid-cols-3">
+            {ind.points.map((p) => (
+              <li class="border-t border-hairline pt-4 text-navy-800">
+                <span class="mb-3 block text-teal-600" aria-hidden="true">
+                  &#8594;
+                </span>
+                {p}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</Section>
+
+<script>
+  // Roving-tabindex tablist. Progressive enhancement: without JS the first
+  // panel stays visible and the rest are simply hidden.
+  const root = document.querySelector<HTMLElement>("[data-industries]");
+  if (root) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+
+    const select = (index: number, focus = false) => {
+      tabs.forEach((tab, i) => {
+        const active = i === index;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+        panels[i].hidden = !active;
+      });
+      if (focus) tabs[index].focus();
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(i));
+      tab.addEventListener("keydown", (event) => {
+        const offset =
+          event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+        if (offset === 0) return;
+        event.preventDefault();
+        select((i + offset + tabs.length) % tabs.length, true);
+      });
+    });
+  }
+</script>

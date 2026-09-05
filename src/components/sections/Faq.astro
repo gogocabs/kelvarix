@@ -1,0 +1,15 @@
+---
+import Section from "../layout/Section.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+import Accordion from "../ui/Accordion.astro";
+import { faqs } from "../../config/content";
+---
+
+<Section id="faq" surface="paper-dim" width="prose">
+  <Eyebrow n="04">Fair questions</Eyebrow>
+  <h2 class="mt-5 font-display text-h2 font-semibold">Sceptical? Good.</h2>
+
+  <div class="mt-12 border-t border-hairline">
+    {faqs.map((f) => <Accordion q={f.q} a={f.a} />)}
+  </div>
+</Section>

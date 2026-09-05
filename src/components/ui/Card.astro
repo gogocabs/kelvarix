@@ -1,0 +1,21 @@
+---
+/** Flat bordered panel. No shadows anywhere in this system. */
+interface Props {
+  surface?: "light" | "dark";
+  class?: string;
+}
+
+const { surface = "light", class: className = "" } = Astro.props;
+---
+
+<article
+  class:list={[
+    "rounded-lg border p-6 md:p-7",
+    surface === "dark"
+      ? "border-hairline-dark bg-navy-700/40"
+      : "border-hairline bg-paper",
+    className,
+  ]}
+>
+  <slot />
+</article>

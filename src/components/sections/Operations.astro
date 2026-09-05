@@ -1,0 +1,28 @@
+---
+import Section from "../layout/Section.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+import { operations } from "../../config/content";
+---
+
+<Section id="operations" surface="paper">
+  <div class="max-w-2xl">
+    <Eyebrow n="01">Operations we take over</Eyebrow>
+    <h2 class="mt-5 font-display text-h2 font-semibold">
+      The busywork your team hates? Hand it over.
+    </h2>
+  </div>
+
+  <div class="reveal mt-14 border-t border-hairline">
+    {
+      operations.map((o) => (
+        <div class="grid gap-2 border-b border-hairline py-5 md:grid-cols-[1fr_1.15fr_auto] md:items-baseline md:gap-8">
+          <p class="text-slate">{o.pain}</p>
+          <p class="font-medium text-navy-800">{o.outcome}</p>
+          <p class="text-label font-semibold uppercase text-teal-600 md:text-right">
+            {o.stat}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+</Section>
