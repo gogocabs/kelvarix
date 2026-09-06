@@ -72,19 +72,17 @@ import { contact } from "../../config/content";
           label="Email"
           placeholder="you@company.com"
           autocomplete="email"
-          required
           maxlength={254}
         />
         <div>
           <span class="text-label font-semibold uppercase text-slate">
-            Phone<span class="text-teal-600" aria-hidden="true"> *</span>
+            Phone
           </span>
           <div class="mt-2 flex gap-2">
             <input
               type="text"
               name="country_code"
               value="+91"
-              required
               aria-label="Country code"
               autocomplete="tel-country-code"
               class="w-20 shrink-0 rounded-md border border-hairline bg-paper px-3 py-3 text-center text-lead text-navy-800 outline-none transition-colors focus:border-teal"
@@ -92,7 +90,6 @@ import { contact } from "../../config/content";
             <input
               type="tel"
               name="phone"
-              required
               placeholder="98765 43210"
               inputmode="numeric"
               autocomplete="tel-national"
@@ -101,7 +98,7 @@ import { contact } from "../../config/content";
             />
           </div>
           <p class="mt-1 text-sm text-slate-600" data-phone-hint>
-            10-digit mobile number, no OTP needed.
+            Share either email or phone — 10-digit mobile, no OTP needed.
           </p>
         </div>
         <Field
@@ -254,22 +251,34 @@ import { contact } from "../../config/content";
     const data = new FormData(target);
     const get = (key) => String(data.get(key) ?? "").trim();
 
-    // Phone: India (+91) needs exactly 10 digits; other codes skip the check.
+    // Contact rule: either a valid email or a valid phone is required.
+    const emailVal = get("email");
+    const emailOk = emailVal !== "" && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal);
     const ccDigits = get("country_code").replace(/\D/g, "");
     const phoneDigits = get("phone").replace(/\D/g, "");
-    let phoneFull;
-    if (ccDigits === "" || ccDigits === "91") {
-      if (phoneDigits.length !== 10) {
-        showNote("Please enter a valid 10-digit mobile number.", false);
-        return;
+    let phoneFull = "";
+    if (phoneDigits !== "") {
+      if (ccDigits === "" || ccDigits === "91") {
+        if (phoneDigits.length !== 10) {
+          showNote("Please enter a valid 10-digit mobile number.", false);
+          return;
+        }
+        phoneFull = `+91 ${phoneDigits}`;
+      } else {
+        if (phoneDigits.length < 4) {
+          showNote("Please enter a valid phone number.", false);
+          return;
+        }
+        phoneFull = `+${ccDigits} ${phoneDigits}`;
       }
-      phoneFull = `+91 ${phoneDigits}`;
-    } else {
-      if (phoneDigits.length < 4) {
-        showNote("Please enter a valid phone number.", false);
-        return;
-      }
-      phoneFull = `+${ccDigits} ${phoneDigits}`;
+    }
+    if (emailVal !== "" && !emailOk) {
+      showNote("Please enter a valid email address.", false);
+      return;
+    }
+    if (!emailOk && !phoneFull) {
+      showNote("Please share your email or phone number so we can reach you.", false);
+      return;
     }
 
     submitBtn?.setAttribute("disabled", "");
@@ -282,7 +291,7 @@ import { contact } from "../../config/content";
         body: JSON.stringify({
           name: get("name"),
           business: get("business"),
-          email: get("email"),
+          email: emailVal,
           phone: phoneFull,
           message: get("message"),
           company_website: get("company_website"),
@@ -293,12 +302,17 @@ import { contact } from "../../config/content";
         if (res.status === 422) {
           const detail = await res.json().catch(() => ({}));
           const fields = detail.fields || [];
+          const both = fields.includes("email") && fields.includes("phone");
           showNote(
-            fields.includes("message")
-              ? "Please tell us a little more — a sentence or two about what's eating your week."
-              : fields.includes("phone")
-                ? "Please enter a valid 10-digit mobile number."
-                : `Please check the highlighted fields (${fields.join(", ") || "form"}) and try again.`,
+            both
+              ? "Please share your email or phone number so we can reach you."
+              : fields.includes("message")
+                ? "Please tell us a little more — a sentence or two about what's eating your week."
+                : fields.includes("phone")
+                  ? "Please enter a valid 10-digit mobile number."
+                  : fields.includes("email")
+                    ? "Please enter a valid email address."
+                    : `Please check the highlighted fields (${fields.join(", ") || "form"}) and try again.`,
             false,
           );
           return;

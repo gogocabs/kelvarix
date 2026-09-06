@@ -145,19 +145,26 @@ async function handleLead(request, env, ctx) {
   const business = String(body.business || "").trim();
   const email = String(body.email || "").trim();
   const message = String(body.message || "").trim();
-  // Phone arrives combined ("+91 9876543210"); India needs exactly 10 digits,
-  // any other country code skips the length check (no OTP flow to verify).
+  // Either email or phone must be valid (phone optional if email is given
+  // and vice versa). Phone arrives combined ("+91 9876543210"); India needs
+  // exactly 10 digits, any other country code skips the length check.
   const rawPhone = String(body.phone || "").trim().replace(/\s+/g, " ");
   const digits = rawPhone.replace(/\D/g, "");
   const cc = (rawPhone.match(/^\+?(\d{1,4})[\s-]/) || [])[1] || "";
   const national = cc && digits.startsWith(cc) ? digits.slice(cc.length) : digits;
   const indian = cc === "" || cc === "91";
   const phone = rawPhone.slice(0, LIMITS.phone[1]);
+  const emailOk = email !== "" && EMAIL_RE.test(email) && email.length <= LIMITS.email[1];
+  const phoneGiven = digits !== "";
+  const phoneOk = phoneGiven && (indian ? national.length === 10 : national.length >= 4);
   const problems = [];
   if (name.length < LIMITS.name[0] || name.length > LIMITS.name[1]) problems.push("name");
   if (business.length > LIMITS.business[1]) problems.push("business");
-  if (!EMAIL_RE.test(email) || email.length > LIMITS.email[1]) problems.push("email");
-  if (indian ? national.length !== 10 : national.length < 4) problems.push("phone");
+  if (!emailOk && !phoneOk) problems.push("email", "phone");
+  else {
+    if (email !== "" && !emailOk) problems.push("email");
+    if (phoneGiven && !phoneOk) problems.push("phone");
+  }
   if (message.length < LIMITS.message[0] || message.length > LIMITS.message[1]) problems.push("message");
   if (problems.length) {
     return new Response(JSON.stringify({ ok: false, error: "validation", fields: problems }), { status: 422, headers: baseHeaders });
