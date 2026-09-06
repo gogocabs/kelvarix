@@ -58,7 +58,7 @@ const word = {
 };
 
 const gap = size * 0.28;
-const label = `${site.name} — ${site.tagline}`;
+const label = `${site.name} logo — Convert your business to AI with ${site.name}`;
 const px = (n: number) => `${Math.round(n * 100) / 100}px`;
 ---
 
@@ -78,6 +78,7 @@ const px = (n: number) => `${Math.round(n * 100) / 100}px`;
       class="max-w-none"
       style={`width:${px(mark.box)};height:${px(mark.box)};margin:${px(-mark.bleedY)} ${px(-mark.bleedX)}`}
       decoding="async"
+      fetchpriority="high"
     />
   </span>
 
@@ -95,6 +96,7 @@ const px = (n: number) => `${Math.round(n * 100) / 100}px`;
           class="max-w-none"
           style={`width:${px(word.width)};height:${px(word.height)};margin:${px(-word.bleedY)} ${px(-word.bleedX)}`}
           decoding="async"
+          fetchpriority="high"
         />
       </span>
     )

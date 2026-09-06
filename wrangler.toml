@@ -1,6 +1,7 @@
 name            = "kelvarix"
 compatibility_date = "2025-09-06"
 account_id      = "12d260e703bb79513000cb98db619cb8"
+workers_dev     = true
 
 [assets]
 directory           = "./dist"

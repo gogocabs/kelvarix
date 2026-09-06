@@ -4,10 +4,24 @@ export const site = {
   name: "Kelvarix",
   tagline: "Value, realized",
   description:
-    "Kelvarix builds AI agents that absorb business busywork — follow-ups, chasing, copy-paste — inside the tools you already use.",
-  // TODO: replace with the real handle/address before launch.
-  whatsapp: "https://wa.me/910000000000",
-  email: "hello@kelvarix.com",
+    "Convert your business to AI with Kelvarix — AI agents that absorb business busywork: follow-ups, chasing, invoices, inbox and CRM, inside the tools you already use.",
+  keywords: [
+    "convert your business to AI with Kelvarix",
+    "Kelvarix",
+    "AI agents",
+    "AI operations studio",
+    "business automation",
+    "AI follow-up agent",
+    "CRM automation",
+    "WhatsApp automation",
+    "AI invoicing",
+    "lead response",
+  ],
+  whatsapp:
+    "https://wa.me/918220769919?text=Hi%20Kelvarix%2C%20I%20want%20to%20start%20immediately.",
+  whatsappDisplay: "+91 82207 69919",
+  email: "enquiry@kelvarix.in",
+  leadsApi: "https://kelvarix-leads.admin-yaazh-ai.workers.dev",
 } as const;
 
 export const navLinks = [

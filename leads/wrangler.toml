@@ -1,0 +1,19 @@
+name            = "kelvarix-leads"
+compatibility_date = "2025-09-06"
+account_id      = "12d260e703bb79513000cb98db619cb8"
+workers_dev     = true
+main            = "src/index.js"
+
+[[d1_databases]]
+binding       = "DB"
+database_name = "kelvarix-leads-db"
+database_id   = "bdcd7566-6abd-4d7a-95a3-5174bc968d0d"
+
+[vars]
+ALLOWED_ORIGINS = "https://kelvarix.in,https://www.kelvarix.in,https://kelvarix.admin-yaazh-ai.workers.dev"
+
+# Secrets (never in git — set via `wrangler secret put --config leads/wrangler.toml`):
+#   TELEGRAM_BOT_TOKEN   BotFather token for @kelvarix_lead_bot
+#   TELEGRAM_CHAT_ID     channel/group/user id ("PENDING" until verified)
+#   ADMIN_USER / ADMIN_PASS
+#   TURNSTILE_SECRET     (later, when Turnstile is enabled)

@@ -28,6 +28,14 @@ const year = new Date().getFullYear();
           ))
         }
         <a
+          href={site.whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-slate transition-colors hover:text-navy-800"
+        >
+          WhatsApp {site.whatsappDisplay}
+        </a>
+        <a
           href={`mailto:${site.email}`}
           class="text-sm text-slate transition-colors hover:text-navy-800"
         >

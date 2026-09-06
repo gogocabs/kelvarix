@@ -16,12 +16,32 @@ import { contact } from "../../config/content";
 
       <div class="mt-9 flex flex-wrap gap-3">
         <Button href={site.whatsapp} variant="primary" external>
-          Chat on WhatsApp
+          {contact.whatsappCta}
         </Button>
         <Button href={`mailto:${site.email}`} variant="ghost-dark">
           {site.email}
         </Button>
       </div>
+      <p class="mt-5 text-sm text-slate-300">
+        {contact.whatsappImmediate}{" "}
+        <a
+          href={site.whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-semibold text-paper underline decoration-teal-400 underline-offset-4 transition-colors hover:text-teal-400"
+        >
+          {site.whatsappDisplay}
+        </a>
+      </p>
+      <p class="mt-5 text-sm text-slate-300">
+        Prefer email? For enquiries, write to{" "}
+        <a
+          href={`mailto:${site.email}`}
+          class="font-semibold text-paper underline decoration-teal-400 underline-offset-4 transition-colors hover:text-teal-400"
+        >
+          {site.email}
+        </a>
+      </p>
     </div>
 
     <form
@@ -57,11 +77,21 @@ import { contact } from "../../config/content";
           placeholder="e.g. We miss weekend enquiries and invoicing takes every Friday…"
           required
         />
+        <!-- Honeypot: humans never see/fill this; bots do. -->
+        <input
+          type="text"
+          name="company_website"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+          class="hidden"
+        />
       </div>
 
       <button
         type="submit"
-        class="mt-7 w-full rounded-full bg-gold px-6 py-3.5 font-semibold text-navy-900 transition-colors hover:bg-gold-600"
+        class="mt-7 w-full rounded-full bg-gold px-6 py-3.5 font-semibold text-navy-900 transition-colors hover:bg-gold-600 disabled:opacity-60"
+        data-submit
       >
         Send — get your workflow map
       </button>
@@ -71,23 +101,26 @@ import { contact } from "../../config/content";
         data-form-note
         role="status"
       >
-        Opening your email app with everything filled in…
       </p>
     </form>
   </div>
 </Section>
 
-<script define:vars={{ email: site.email }}>
-  // Static host, no backend: hand off to the visitor's mail client with the
-  // form contents pre-composed. Native validation runs first.
+<script define:vars={{ email: site.email, api: site.leadsApi, whatsapp: site.whatsapp }}>
+  // Submit to the leads API; fall back to mailto/WhatsApp if the network fails.
   const form = document.querySelector("[data-contact-form]");
   const note = document.querySelector("[data-form-note]");
+  const submitBtn = document.querySelector("[data-submit]");
 
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const data = new FormData(event.target);
+  const showNote = (text, ok) => {
+    if (!note) return;
+    note.textContent = text;
+    note.classList.remove("hidden");
+    note.classList.toggle("text-teal-600", ok !== false);
+  };
+
+  const mailtoHref = (data) => {
     const get = (key) => String(data.get(key) ?? "").trim();
-
     const subject = `Workflow map request — ${get("business") || get("name")}`;
     const body = [
       `Name: ${get("name")}`,
@@ -96,10 +129,45 @@ import { contact } from "../../config/content";
       "",
       get("message"),
     ].join("\n");
+    return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
 
-    note?.classList.remove("hidden");
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(body)}`;
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const target = event.target;
+    if (!target.reportValidity()) return;
+    const data = new FormData(target);
+    const get = (key) => String(data.get(key) ?? "").trim();
+
+    submitBtn?.setAttribute("disabled", "");
+    showNote("Sending…");
+
+    try {
+      const res = await fetch(`${api}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: get("name"),
+          business: get("business"),
+          email: get("email"),
+          message: get("message"),
+          company_website: get("company_website"),
+          source: "kelvarix.in",
+        }),
+      });
+      if (!res.ok) throw new Error(`leads-api-${res.status}`);
+      target.reset();
+      showNote("Received — we'll reply within 24 hours.");
+    } catch {
+      // Offline/API down: hand off to the visitor's mail client or WhatsApp.
+      showNote("");
+      const waBase = String(whatsapp).split("?")[0];
+      const wa = `${waBase}?text=${encodeURIComponent(
+        `Hi Kelvarix, I'm ${get("name")} (${get("email")}). ${get("message")}`,
+      )}`;
+      note.innerHTML = `Couldn't send directly — <a href="${mailtoHref(data)}" class="font-semibold underline">open your email app</a> or <a href="${wa}" target="_blank" rel="noopener" class="font-semibold underline">continue on WhatsApp</a>.`;
+    } finally {
+      submitBtn?.removeAttribute("disabled");
+    }
   });
 </script>

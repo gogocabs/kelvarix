@@ -132,4 +132,6 @@ export const contact = {
   eyebrow: "Start here",
   heading: "Bring us your busiest workflow.",
   body: "Tell us how work gets done today. We'll reply within 24 hours with honest first thoughts — even if the answer is \"don't automate this yet.\"",
+  whatsappCta: "Chat on WhatsApp",
+  whatsappImmediate: "For immediate start — fastest on WhatsApp.",
 } as const;
