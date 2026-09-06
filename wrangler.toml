@@ -1,0 +1,16 @@
+name            = "kelvarix"
+compatibility_date = "2025-09-06"
+account_id      = "12d260e703bb79513000cb98db619cb8"
+
+[assets]
+directory           = "./dist"
+not_found_handling  = "404-page"
+
+# Serve on the apex domain — zone must be active in the account above
+[[routes]]
+pattern = "kelvarix.in/*"
+zone_id = "50eeee3c4b92a743a2367344ece65ff2"
+
+[[routes]]
+pattern = "www.kelvarix.in/*"
+zone_id = "50eeee3c4b92a743a2367344ece65ff2"

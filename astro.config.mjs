@@ -5,8 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://gogocabs.github.io',
-  base: '/kelvarix/',
+  site: 'https://kelvarix.in',
   vite: {
     plugins: [tailwindcss()]
   }
