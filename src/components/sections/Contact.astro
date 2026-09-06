@@ -4,6 +4,7 @@ import Eyebrow from "../ui/Eyebrow.astro";
 import Field from "../ui/Field.astro";
 import Button from "../ui/Button.astro";
 import { site } from "../../config/site";
+import { asset } from "../../lib/url";
 import { contact } from "../../config/content";
 ---
 
@@ -104,6 +105,43 @@ import { contact } from "../../config/content";
       </p>
     </form>
   </div>
+
+  <!-- Success modal: shown after the lead is stored. -->
+  <div
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-navy-900/70 p-6"
+    data-success-modal
+  >
+    <div
+      class="w-full max-w-sm rounded-lg border border-hairline bg-paper p-8 text-center text-navy-800"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="success-title"
+    >
+      <img
+        src={asset("success.gif")}
+        alt="Success — your request was received"
+        width="160"
+        height="160"
+        class="mx-auto size-24"
+      />
+      <h3 id="success-title" class="mt-5 font-display text-h3 font-semibold">
+        Request received!
+      </h3>
+      <p class="mt-2 font-display text-h3 font-semibold text-teal-600">
+        Your business is about to run itself.
+      </p>
+      <p class="mt-3 text-sm text-slate-600">
+        Our team will get back within a few hours with your workflow map.
+      </p>
+      <button
+        type="button"
+        class="mt-6 w-full rounded-full bg-gold px-6 py-3 font-semibold text-navy-900 transition-colors hover:bg-gold-600"
+        data-modal-close
+      >
+        Done
+      </button>
+    </div>
+  </div>
 </Section>
 
 <script define:vars={{ email: site.email, api: site.leadsApi, whatsapp: site.whatsapp }}>
@@ -111,6 +149,26 @@ import { contact } from "../../config/content";
   const form = document.querySelector("[data-contact-form]");
   const note = document.querySelector("[data-form-note]");
   const submitBtn = document.querySelector("[data-submit]");
+  const modal = document.querySelector("[data-success-modal]");
+  const modalClose = document.querySelector("[data-modal-close]");
+
+  const openModal = () => {
+    modal?.classList.remove("hidden");
+    modal?.classList.add("flex");
+    document.body.style.overflow = "hidden";
+    modalClose?.focus();
+  };
+  const closeModal = () => {
+    modal?.classList.add("hidden");
+    modal?.classList.remove("flex");
+    document.body.style.overflow = "";
+    submitBtn?.focus();
+  };
+  modalClose?.addEventListener("click", closeModal);
+  modal?.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal?.classList.contains("hidden")) closeModal();
+  });
 
   const showNote = (text, ok) => {
     if (!note) return;
@@ -157,7 +215,8 @@ import { contact } from "../../config/content";
       });
       if (!res.ok) throw new Error(`leads-api-${res.status}`);
       target.reset();
-      showNote("Received — we'll reply within 24 hours.");
+      note?.classList.add("hidden");
+      openModal();
     } catch {
       // Offline/API down: hand off to the visitor's mail client or WhatsApp.
       showNote("");
