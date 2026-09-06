@@ -11,7 +11,7 @@
  * TURNSTILE_SECRET (later — hook below is ready).
  */
 
-const LIMITS = { name: [2, 80], business: [0, 120], email: [5, 254], message: [10, 2000] };
+const LIMITS = { name: [2, 80], business: [0, 120], email: [5, 254], phone: [4, 24], message: [10, 2000] };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX = 5;
@@ -102,6 +102,7 @@ async function sendTelegram(env, lead) {
     `Name: ${esc(lead.name)}`,
     `Business: ${esc(lead.business || "—")}`,
     `Email: ${esc(lead.email)}`,
+    `Phone: ${esc(lead.phone)}`,
     "",
     esc(lead.message),
   ].join("\n").slice(0, 4000);
@@ -144,10 +145,19 @@ async function handleLead(request, env, ctx) {
   const business = String(body.business || "").trim();
   const email = String(body.email || "").trim();
   const message = String(body.message || "").trim();
+  // Phone arrives combined ("+91 9876543210"); India needs exactly 10 digits,
+  // any other country code skips the length check (no OTP flow to verify).
+  const rawPhone = String(body.phone || "").trim().replace(/\s+/g, " ");
+  const digits = rawPhone.replace(/\D/g, "");
+  const cc = (rawPhone.match(/^\+?(\d{1,4})[\s-]/) || [])[1] || "";
+  const national = cc && digits.startsWith(cc) ? digits.slice(cc.length) : digits;
+  const indian = cc === "" || cc === "91";
+  const phone = rawPhone.slice(0, LIMITS.phone[1]);
   const problems = [];
   if (name.length < LIMITS.name[0] || name.length > LIMITS.name[1]) problems.push("name");
   if (business.length > LIMITS.business[1]) problems.push("business");
   if (!EMAIL_RE.test(email) || email.length > LIMITS.email[1]) problems.push("email");
+  if (indian ? national.length !== 10 : national.length < 4) problems.push("phone");
   if (message.length < LIMITS.message[0] || message.length > LIMITS.message[1]) problems.push("message");
   if (problems.length) {
     return new Response(JSON.stringify({ ok: false, error: "validation", fields: problems }), { status: 422, headers: baseHeaders });
@@ -158,14 +168,14 @@ async function handleLead(request, env, ctx) {
   let id;
   try {
     const r = await env.DB.prepare(
-      "INSERT INTO leads (name, business, email, message, source, ip_hash) VALUES (?, ?, ?, ?, ?, ?)",
-    ).bind(name, business, email, message, source, ipHash).run();
+      "INSERT INTO leads (name, business, email, phone, message, source, ip_hash) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    ).bind(name, business, email, phone, message, source, ipHash).run();
     id = r.meta.last_row_id;
   } catch (e) {
     return new Response(JSON.stringify({ ok: false, error: "db" }), { status: 500, headers: baseHeaders });
   }
 
-  const lead = { id, name, business, email, message };
+  const lead = { id, name, business, email, phone, message };
   ctx.waitUntil((async () => {
     const t = await sendTelegram(env, lead);
     if (t.sent) {
@@ -184,11 +194,11 @@ async function handleFeed(request, env, url) {
   let rows;
   if (q) {
     rows = (await env.DB.prepare(
-      "SELECT id, created_at, name, business, email, message, source, telegram_ok FROM leads WHERE name LIKE ? OR email LIKE ? OR business LIKE ? OR message LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?",
-    ).bind(`%${q}%`, `%${q}%`, `%${q}%`, `%${q}%`, limit, offset).all()).results;
+      "SELECT id, created_at, name, business, email, phone, message, source, telegram_ok FROM leads WHERE name LIKE ? OR email LIKE ? OR business LIKE ? OR message LIKE ? OR phone LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?",
+    ).bind(`%${q}%`, `%${q}%`, `%${q}%`, `%${q}%`, `%${q}%`, limit, offset).all()).results;
   } else {
     rows = (await env.DB.prepare(
-      "SELECT id, created_at, name, business, email, message, source, telegram_ok FROM leads ORDER BY id DESC LIMIT ? OFFSET ?",
+      "SELECT id, created_at, name, business, email, phone, message, source, telegram_ok FROM leads ORDER BY id DESC LIMIT ? OFFSET ?",
     ).bind(limit, offset).all()).results;
   }
   const total = (await env.DB.prepare("SELECT COUNT(*) AS n FROM leads").first()).n;
@@ -216,8 +226,8 @@ a{color:#2AA8A8}.meta{color:#A8BACB;font-size:12px;margin-top:16px}
 </style></head><body>
 <h1>Kelvarix Leads</h1><div class="sub">Internal — do not share this URL.</div>
 <form method="get"><input name="q" placeholder="Search name, email, business…" value="${q}"><button>Search</button></form>
-<table><thead><tr><th>#</th><th>Time (UTC)</th><th>Name</th><th>Business</th><th>Email</th><th>Message</th><th>TG</th></tr></thead>
-<tbody id="rows"><tr><td colspan="7">Loading…</td></tr></tbody></table>
+<table><thead><tr><th>#</th><th>Time (UTC)</th><th>Name</th><th>Business</th><th>Email</th><th>Phone</th><th>Message</th><th>TG</th></tr></thead>
+<tbody id="rows"><tr><td colspan="8">Loading…</td></tr></tbody></table>
 <div class="meta" id="meta"></div>
 <p class="meta"><a href="#" id="logout">Log out</a> (clears saved login)</p>
 <script>
@@ -228,8 +238,9 @@ fetch("/api/leads?q=" + encodeURIComponent(q) + "&limit=100").then(r => r.json()
     "<tr><td>" + r.id + "</td><td>" + r.created_at.replace("T"," ").slice(0,19) +
     "</td><td>" + e(r.name) + "</td><td>" + e(r.business || "—") +
     "</td><td><a href='mailto:" + e(r.email) + "'>" + e(r.email) + "</a>" +
+    "</td><td><a href='tel:" + e(r.phone.replace(/[^+\\d]/g, "")) + "'>" + e(r.phone || "—") + "</a>" +
     "</td><td class='msg'>" + e(r.message) + "</td>" +
-    "<td class='" + (r.telegram_ok ? "ok'>✓" : "no'>…") + "</td></tr>").join("") || "<tr><td colspan='7'>No leads yet.</td></tr>";
+    "<td class='" + (r.telegram_ok ? "ok'>✓" : "no'>…") + "</td></tr>").join("") || "<tr><td colspan='8'>No leads yet.</td></tr>";
 });
 function e(s){return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 document.getElementById("logout").onclick = (ev) => {

@@ -6,6 +6,8 @@ interface Props {
   placeholder?: string;
   required?: boolean;
   rows?: number;
+  minlength?: number;
+  maxlength?: number;
   /** Always set for identity fields so browsers can autofill. */
   autocomplete?: string;
 }
@@ -17,11 +19,13 @@ const {
   placeholder,
   required = false,
   rows = 4,
+  minlength,
+  maxlength,
   autocomplete,
 } = Astro.props;
 
 const control =
-  "mt-2 w-full rounded-md border border-hairline bg-paper px-3.5 py-2.5 text-navy-800 outline-none transition-colors placeholder:text-slate focus:border-teal";
+  "mt-2 w-full rounded-md border border-hairline bg-paper px-4 py-3 text-lead text-navy-800 outline-none transition-colors placeholder:text-slate focus:border-teal";
 ---
 
 <label class="block">
@@ -34,6 +38,8 @@ const control =
         name={name}
         rows={rows}
         required={required}
+        minlength={minlength}
+        maxlength={maxlength}
         placeholder={placeholder}
         autocomplete={autocomplete}
         class={control}
@@ -43,6 +49,8 @@ const control =
         type={type}
         name={name}
         required={required}
+        minlength={minlength}
+        maxlength={maxlength}
         placeholder={placeholder}
         autocomplete={autocomplete}
         class={control}

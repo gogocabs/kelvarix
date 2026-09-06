@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS leads (
   name        TEXT NOT NULL,
   business    TEXT NOT NULL DEFAULT '',
   email       TEXT NOT NULL,
+  phone       TEXT NOT NULL DEFAULT '',
   message     TEXT NOT NULL,
   source      TEXT NOT NULL DEFAULT 'kelvarix.in',
   ip_hash     TEXT NOT NULL DEFAULT '',

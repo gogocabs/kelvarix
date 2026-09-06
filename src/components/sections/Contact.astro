@@ -49,19 +49,22 @@ import { contact } from "../../config/content";
       class="reveal rounded-lg border border-hairline-dark bg-paper p-6 md:p-8"
       data-contact-form
     >
-      <div class="space-y-5">
+      <div class="space-y-6">
         <Field
           name="name"
           label="Your name"
           placeholder="Jane Patel"
           autocomplete="name"
           required
+          minlength={2}
+          maxlength={80}
         />
         <Field
           name="business"
           label="Business"
           placeholder="Patel Realty"
           autocomplete="organization"
+          maxlength={120}
         />
         <Field
           name="email"
@@ -70,13 +73,45 @@ import { contact } from "../../config/content";
           placeholder="you@company.com"
           autocomplete="email"
           required
+          maxlength={254}
         />
+        <div>
+          <span class="text-label font-semibold uppercase text-slate">
+            Phone<span class="text-teal-600" aria-hidden="true"> *</span>
+          </span>
+          <div class="mt-2 flex gap-2">
+            <input
+              type="text"
+              name="country_code"
+              value="+91"
+              required
+              aria-label="Country code"
+              autocomplete="tel-country-code"
+              class="w-20 shrink-0 rounded-md border border-hairline bg-paper px-3 py-3 text-center text-lead text-navy-800 outline-none transition-colors focus:border-teal"
+            />
+            <input
+              type="tel"
+              name="phone"
+              required
+              placeholder="98765 43210"
+              inputmode="numeric"
+              autocomplete="tel-national"
+              aria-label="Phone number"
+              class="w-full rounded-md border border-hairline bg-paper px-4 py-3 text-lead text-navy-800 outline-none transition-colors placeholder:text-slate focus:border-teal"
+            />
+          </div>
+          <p class="mt-1 text-sm text-slate-600" data-phone-hint>
+            10-digit mobile number, no OTP needed.
+          </p>
+        </div>
         <Field
           name="message"
           type="textarea"
           label="What's eating your week?"
           placeholder="e.g. We miss weekend enquiries and invoicing takes every Friday…"
           required
+          minlength={10}
+          maxlength={2000}
         />
         <!-- Honeypot: humans never see/fill this; bots do. -->
         <input
@@ -177,6 +212,27 @@ import { contact } from "../../config/content";
     note.classList.toggle("text-teal-600", ok !== false);
   };
 
+  // Live phone guard: +91 (or blank cc) caps the number at 10 digits and
+  // strips non-digits as you type; other country codes type freely.
+  const ccInput = form?.querySelector('[name="country_code"]');
+  const phoneInput = form?.querySelector('[name="phone"]');
+  const isIndiaCc = () => {
+    const ccD = (ccInput?.value || "").replace(/\D/g, "");
+    return ccD === "" || ccD === "91";
+  };
+  const enforcePhone = () => {
+    if (!phoneInput) return;
+    if (isIndiaCc()) {
+      phoneInput.maxLength = 10;
+      phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10);
+    } else {
+      phoneInput.removeAttribute("maxlength");
+    }
+  };
+  ccInput?.addEventListener("input", enforcePhone);
+  phoneInput?.addEventListener("input", enforcePhone);
+  enforcePhone();
+
   const mailtoHref = (data) => {
     const get = (key) => String(data.get(key) ?? "").trim();
     const subject = `Workflow map request — ${get("business") || get("name")}`;
@@ -184,6 +240,7 @@ import { contact } from "../../config/content";
       `Name: ${get("name")}`,
       `Business: ${get("business") || "—"}`,
       `Email: ${get("email")}`,
+      `Phone: ${get("country_code")} ${get("phone")}`,
       "",
       get("message"),
     ].join("\n");
@@ -197,6 +254,24 @@ import { contact } from "../../config/content";
     const data = new FormData(target);
     const get = (key) => String(data.get(key) ?? "").trim();
 
+    // Phone: India (+91) needs exactly 10 digits; other codes skip the check.
+    const ccDigits = get("country_code").replace(/\D/g, "");
+    const phoneDigits = get("phone").replace(/\D/g, "");
+    let phoneFull;
+    if (ccDigits === "" || ccDigits === "91") {
+      if (phoneDigits.length !== 10) {
+        showNote("Please enter a valid 10-digit mobile number.", false);
+        return;
+      }
+      phoneFull = `+91 ${phoneDigits}`;
+    } else {
+      if (phoneDigits.length < 4) {
+        showNote("Please enter a valid phone number.", false);
+        return;
+      }
+      phoneFull = `+${ccDigits} ${phoneDigits}`;
+    }
+
     submitBtn?.setAttribute("disabled", "");
     showNote("Sending…");
 
@@ -208,12 +283,28 @@ import { contact } from "../../config/content";
           name: get("name"),
           business: get("business"),
           email: get("email"),
+          phone: phoneFull,
           message: get("message"),
           company_website: get("company_website"),
           source: "kelvarix.in",
         }),
       });
-      if (!res.ok) throw new Error(`leads-api-${res.status}`);
+      if (!res.ok) {
+        if (res.status === 422) {
+          const detail = await res.json().catch(() => ({}));
+          const fields = detail.fields || [];
+          showNote(
+            fields.includes("message")
+              ? "Please tell us a little more — a sentence or two about what's eating your week."
+              : fields.includes("phone")
+                ? "Please enter a valid 10-digit mobile number."
+                : `Please check the highlighted fields (${fields.join(", ") || "form"}) and try again.`,
+            false,
+          );
+          return;
+        }
+        throw new Error(`leads-api-${res.status}`);
+      }
       target.reset();
       note?.classList.add("hidden");
       openModal();
