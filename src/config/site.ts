@@ -4,12 +4,15 @@ export const site = {
   name: "Kelvarix",
   tagline: "Value, realized",
   description:
-    "Convert your business to AI with Kelvarix — AI agents that absorb business busywork: follow-ups, chasing, invoices, inbox and CRM, inside the tools you already use.",
+    "We build the agents that run your business — custom AI agents, your own CRM and MCP, on infrastructure you own. Convert your business to AI with Kelvarix.",
   keywords: [
     "convert your business to AI with Kelvarix",
     "Kelvarix",
     "AI agents",
+    "custom AI agents",
     "AI operations studio",
+    "own your CRM one-time cost",
+    "MCP Telegram stock",
     "business automation",
     "AI follow-up agent",
     "CRM automation",

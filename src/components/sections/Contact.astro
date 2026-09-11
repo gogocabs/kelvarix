@@ -11,7 +11,7 @@ import { contact } from "../../config/content";
 <Section id="contact" surface="navy-deep" class="border-none">
   <div class="grid gap-14 md:grid-cols-2 md:gap-20">
     <div class="reveal">
-      <Eyebrow n="05" surface="dark">{contact.eyebrow}</Eyebrow>
+      <Eyebrow n="06" surface="dark">{contact.eyebrow}</Eyebrow>
       <h2 class="mt-5 font-display text-h2 font-semibold">{contact.heading}</h2>
       <p class="mt-5 max-w-md text-slate-300">{contact.body}</p>
 
@@ -286,19 +286,30 @@ import { contact } from "../../config/content";
     showNote("Sending…");
 
     try {
-      const res = await fetch(`${api}/api/leads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: get("name"),
-          business: get("business"),
-          email: emailVal,
-          phone: phoneFull,
-          message: get("message"),
-          company_website: get("company_website"),
-          source: "kelvarix.in",
-        }),
+      // Same-origin first: no CORS preflight, works inside Instagram/FB
+      // webviews. Direct backend second (local dev has no site worker).
+      const payload = JSON.stringify({
+        name: get("name"),
+        business: get("business"),
+        email: emailVal,
+        phone: phoneFull,
+        message: get("message"),
+        company_website: get("company_website"),
+        source: "kelvarix.in",
       });
+      const postLead = (url) =>
+        fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload,
+        });
+      let res;
+      try {
+        res = await postLead("/api/leads");
+        if (res.status === 404) res = await postLead(`${api}/api/leads`);
+      } catch {
+        res = await postLead(`${api}/api/leads`);
+      }
       if (!res.ok) {
         if (res.status === 422) {
           const detail = await res.json().catch(() => ({}));

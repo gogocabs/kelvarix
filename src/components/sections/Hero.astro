@@ -3,18 +3,18 @@ import Container from "../layout/Container.astro";
 import Button from "../ui/Button.astro";
 import { hero, channels } from "../../config/content";
 
-/* Endpoint rows for the circuit diagram, mirroring the logomark's traces. */
-const left = [
-  { y: 60,  label: "Calls" },
-  { y: 150, label: "Chats" },
-  { y: 250, label: "Invoices" },
-  { y: 340, label: "WhatsApp" },
+/* Before/after diagram: scattered manual work (left) flows through the agents
+   we build (centre) and comes out as ordered outcomes (right). */
+const chaos = [
+  { x: 100, y: 100, kind: "mail" },
+  { x: 210, y: 80, kind: "doc" },
+  { x: 80, y: 210, kind: "clock" },
+  { x: 215, y: 235, kind: "chat" },
 ];
-const right = [
-  { y: 60,  label: "Leads" },
-  { y: 150, label: "Inbox" },
-  { y: 250, label: "Reports" },
-  { y: 340, label: "CRM" },
+const outcomes = [
+  { x: 620, y: 120, label: "Booked" },
+  { x: 620, y: 200, label: "Reconciled" },
+  { x: 620, y: 280, label: "Answered" },
 ];
 ---
 
@@ -68,9 +68,9 @@ const right = [
         </ul>
       </div>
 
-      <!-- Right column: circuit diagram, md+ only -->
-      <!-- One agent, many channels. Decorative: the labels are duplicated
-           in the Operations table, so the diagram is hidden from assistive tech. -->
+      <!-- Right column: before/after diagram, lg+ only -->
+      <!-- Manual chaos in, ordered outcomes out. Decorative: the story is told
+           in copy elsewhere, so the diagram is hidden from assistive tech. -->
       <div class="reveal hidden lg:flex lg:items-center lg:justify-center" aria-hidden="true">
         <svg
           viewBox="0 0 720 400"
@@ -79,28 +79,48 @@ const right = [
           stroke-linecap="round"
           stroke-linejoin="round"
         >
+        <text x="40" y="32" fill="var(--color-slate-300)" font-family="var(--font-sans)" font-size="13" font-weight="600" letter-spacing="1.4">MANUAL</text>
+        <text x="680" y="32" text-anchor="end" fill="var(--color-gold)" font-family="var(--font-sans)" font-size="13" font-weight="600" letter-spacing="1.4">AUTOMATED</text>
+        <line x1="300" y1="48" x2="300" y2="352" stroke="var(--color-slate-300)" stroke-width="2" stroke-dasharray="4 8" opacity="0.3" />
+
+        <!-- Scattered manual work: muted glyphs, tangled static connectors -->
+        <g stroke="var(--color-slate-300)" stroke-width="2" opacity="0.55">
+          <rect x="86" y="90" width="28" height="20" rx="3" />
+          <path d="M86 90 l14 10 14-10" />
+          <rect x="200" y="66" width="20" height="28" rx="2" />
+          <line x1="204" y1="76" x2="216" y2="76" />
+          <line x1="204" y1="84" x2="216" y2="84" />
+          <circle cx="80" cy="210" r="12" />
+          <path d="M80 210 v-7 M80 210 l5 4" />
+          <rect x="201" y="224" width="28" height="20" rx="6" />
+          <path d="M208 244 l-2 8 10-8" />
+        </g>
+        <g stroke="var(--color-slate-300)" stroke-width="2" stroke-dasharray="5 6" opacity="0.3" fill="none">
+          <path d="M114 106 C150 118, 160 100, 198 88" />
+          <path d="M92 218 C130 226, 160 210, 201 230" />
+          <path d="M108 112 C140 160, 150 180, 203 228" />
+        </g>
+
+        <!-- Clean conduit: chaos flows into the agents we built -->
         <g stroke="var(--color-teal)" stroke-width="3">
-          <path class="trace" style="--trace-len:270" d="M310 200 H240 L150 60 H128" />
-          <path class="trace" style="--trace-len:205" d="M310 200 H255 L150 150 H128" />
-          <path class="trace" style="--trace-len:205" d="M310 200 H255 L150 250 H128" />
-          <path class="trace" style="--trace-len:270" d="M310 200 H240 L150 340 H128" />
-          <path class="trace" style="--trace-len:270" d="M410 200 H480 L570 60 H592" />
-          <path class="trace" style="--trace-len:205" d="M410 200 H465 L570 150 H592" />
-          <path class="trace" style="--trace-len:205" d="M410 200 H465 L570 250 H592" />
-          <path class="trace" style="--trace-len:270" d="M410 200 H480 L570 340 H592" />
+          <path class="trace" style="--trace-len:130" d="M252 120 H300 L348 182" />
+          <path class="trace" style="--trace-len:100" d="M252 200 H348" />
+          <path class="trace" style="--trace-len:130" d="M252 280 H300 L348 218" />
+          <path class="trace" style="--trace-len:210" d="M432 182 H540 L618 122" stroke="var(--color-gold)" />
+          <path class="trace" style="--trace-len:190" d="M432 200 H618" stroke="var(--color-gold)" />
+          <path class="trace" style="--trace-len:210" d="M432 218 H540 L618 278" stroke="var(--color-gold)" />
         </g>
 
         <g fill="var(--color-teal)">
-          {left.map((n) => <circle cx="120" cy={n.y} r="5" />)}
-          {right.map((n) => <circle cx="600" cy={n.y} r="5" />)}
+          {outcomes.map((n) => <circle cx={n.x} cy={n.y} r="5" />)}
         </g>
 
         <!-- Agent activity ring: pulses outward to show active processing -->
-        <circle class="agent-ring" cx="360" cy="200" r="48" fill="none" stroke="var(--color-teal)" stroke-width="1.5" />
+        <circle class="agent-ring" cx="390" cy="200" r="48" fill="none" stroke="var(--color-teal)" stroke-width="1.5" />
 
         <!-- Agent node: the mark's gold chevron over a navy body. -->
         <rect
-          x="320"
+          x="350"
           y="160"
           width="80"
           height="80"
@@ -110,11 +130,12 @@ const right = [
           stroke-width="2"
         />
         <path
-          d="M347 181 L371 200 L347 219"
+          d="M377 181 L401 200 L377 219"
           stroke="var(--color-gold)"
           stroke-width="9"
         />
-        <rect x="378" y="179" width="7" height="42" rx="3.5" fill="var(--color-paper)" />
+        <rect x="408" y="179" width="7" height="42" rx="3.5" fill="var(--color-paper)" />
+        <text x="390" y="272" text-anchor="middle" fill="var(--color-teal-400)" font-family="var(--font-sans)" font-size="12" font-weight="600" letter-spacing="1.4">YOUR AGENTS</text>
 
         <g
           fill="var(--color-slate-300)"
@@ -123,33 +144,26 @@ const right = [
           font-weight="600"
           letter-spacing="1.4"
         >
-          {left.map((n) => (
-            <text x="104" y={n.y + 4} text-anchor="end">
-              {n.label.toUpperCase()}
-            </text>
-          ))}
-          {right.map((n) => (
-            <text x="616" y={n.y + 4}>
+          {outcomes.map((n) => (
+            <text x={n.x + 16} y={n.y + 4}>
               {n.label.toUpperCase()}
             </text>
           ))}
         </g>
 
-        <!-- Data-flow dots: teal = inputs entering the agent, gold = outputs leaving -->
-        <circle class="flow-dot" r="3" fill="var(--color-teal-400)" style="offset-path: path('M128 60 H150 L240 200 H310'); animation-delay: 0s;" />
-        <circle class="flow-dot" r="3" fill="var(--color-teal-400)" style="offset-path: path('M128 150 H150 L255 200 H310'); animation-delay: 0.7s;" />
-        <circle class="flow-dot" r="3" fill="var(--color-teal-400)" style="offset-path: path('M128 250 H150 L255 200 H310'); animation-delay: 1.4s;" />
-        <circle class="flow-dot" r="3" fill="var(--color-teal-400)" style="offset-path: path('M128 340 H150 L240 200 H310'); animation-delay: 2.1s;" />
-        <circle class="flow-dot" r="3" fill="var(--color-gold)" style="offset-path: path('M410 200 H480 L570 60 H592'); animation-delay: 0.35s;" />
-        <circle class="flow-dot" r="3" fill="var(--color-gold)" style="offset-path: path('M410 200 H465 L570 150 H592'); animation-delay: 1.05s;" />
-        <circle class="flow-dot" r="3" fill="var(--color-gold)" style="offset-path: path('M410 200 H465 L570 250 H592'); animation-delay: 1.75s;" />
-        <circle class="flow-dot" r="3" fill="var(--color-gold)" style="offset-path: path('M410 200 H480 L570 340 H592'); animation-delay: 2.45s;" />
+        <!-- Data-flow dots: teal = chaos entering, gold = outcomes leaving -->
+        <circle class="flow-dot" r="3" fill="var(--color-teal-400)" style="offset-path: path('M252 120 H300 L348 182'); animation-delay: 0s;" />
+        <circle class="flow-dot" r="3" fill="var(--color-teal-400)" style="offset-path: path('M252 200 H348'); animation-delay: 0.8s;" />
+        <circle class="flow-dot" r="3" fill="var(--color-teal-400)" style="offset-path: path('M252 280 H300 L348 218'); animation-delay: 1.6s;" />
+        <circle class="flow-dot" r="3" fill="var(--color-gold)" style="offset-path: path('M432 182 H540 L618 122'); animation-delay: 0.4s;" />
+        <circle class="flow-dot" r="3" fill="var(--color-gold)" style="offset-path: path('M432 200 H618'); animation-delay: 1.2s;" />
+        <circle class="flow-dot" r="3" fill="var(--color-gold)" style="offset-path: path('M432 218 H540 L618 278'); animation-delay: 2s;" />
 
-        <!-- Growth sparkline: draws once after traces, signals upward business output -->
+        <!-- Growth sparkline: draws once after traces, signals faster business -->
         <polyline
           class="sparkline"
-          style="--spark-len:228"
-          points="250,392 310,384 370,374 430,366 470,360"
+          style="--spark-len:190"
+          points="470,362 530,354 590,342 650,328"
           fill="none"
           stroke="var(--color-gold)"
           stroke-width="2"
@@ -157,9 +171,9 @@ const right = [
           stroke-linejoin="round"
         />
         <g class="spark-label">
-          <circle cx="470" cy="360" r="3.5" fill="var(--color-gold)" />
-          <path d="M462 367 L470 360 L478 367" fill="none" stroke="var(--color-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          <text x="485" y="364" fill="var(--color-gold)" font-family="var(--font-sans)" font-size="11" font-weight="700" letter-spacing="0.5">10×</text>
+          <circle cx="650" cy="328" r="3.5" fill="var(--color-gold)" />
+          <path d="M642 335 L650 328 L658 335" fill="none" stroke="var(--color-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <text x="665" y="332" fill="var(--color-gold)" font-family="var(--font-sans)" font-size="11" font-weight="700" letter-spacing="0.5">10×</text>
         </g>
 
       </svg>

@@ -122,7 +122,16 @@ async function sendTelegram(env, lead) {
 /* ---------- POST /api/leads ---------- */
 async function handleLead(request, env, ctx) {
   const baseHeaders = { "Content-Type": "application/json", ...cors(request, env) };
-  const ip = request.headers.get("CF-Connecting-IP") || "";
+  // Direct callers: CF-Connecting-IP. Same-origin proxy (site worker): it
+  // passes the real client IP in X-Client-Ip, trusted only with PROXY_SECRET.
+  let ip = request.headers.get("CF-Connecting-IP") || "";
+  if (
+    env.PROXY_SECRET &&
+    request.headers.get("X-Proxy-Secret") === env.PROXY_SECRET
+  ) {
+    ip = request.headers.get("X-Client-Ip") || ip;
+  }
+  ip = ip.split(",")[0].trim();
   if (rateLimited(ip)) {
     return new Response(JSON.stringify({ ok: false, error: "rate-limited" }), { status: 429, headers: baseHeaders });
   }

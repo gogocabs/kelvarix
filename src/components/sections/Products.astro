@@ -1,0 +1,81 @@
+---
+/**
+ * Own your infrastructure — alternating illustration/text rows on navy.
+ * Illustrations reuse the hero's SVG dialect (teal traces, gold accents,
+ * slate labels). Decorative: aria-hidden, content carried by the copy.
+ */
+import Section from "../layout/Section.astro";
+import Eyebrow from "../ui/Eyebrow.astro";
+import { products } from "../../config/content";
+
+---
+
+<Section id="products" surface="navy">
+  <div class="max-w-2xl">
+    <Eyebrow n="02" surface="dark">{products.eyebrow}</Eyebrow>
+    <h2 class="mt-5 font-display text-h2 font-semibold">{products.heading}</h2>
+  </div>
+
+  <div class="mt-14 space-y-16 md:space-y-20">
+    {
+      products.items.map((p, i) => (
+        <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+          <div class:list={["reveal", i % 2 === 1 && "md:order-2"]} aria-hidden="true">
+            {p.art === "rebuild" && (
+              <svg viewBox="0 0 400 300" class="w-full" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="86" y="72" width="260" height="160" rx="12" stroke="var(--color-slate-300)" stroke-width="2" stroke-dasharray="8 8" opacity="0.45" />
+                <rect x="70" y="60" width="260" height="160" rx="12" fill="var(--color-navy-700)" stroke="var(--color-teal)" stroke-width="3" />
+                <line x1="70" y1="92" x2="330" y2="92" stroke="var(--color-teal)" stroke-width="2" />
+                <circle cx="90" cy="76" r="4" fill="var(--color-teal)" />
+                <circle cx="106" cy="76" r="4" fill="var(--color-gold)" />
+                <circle cx="122" cy="76" r="4" fill="var(--color-slate-300)" />
+                <polyline points="110,190 160,182 210,170 260,150 300,138" stroke="var(--color-gold)" stroke-width="3" />
+                <circle cx="300" cy="138" r="4" fill="var(--color-gold)" />
+                <text x="312" y="142" fill="var(--color-gold)" font-family="var(--font-sans)" font-size="13" font-weight="700">2×</text>
+                <text x="70" y="252" fill='var(--color-slate-300)' font-family='var(--font-sans)' font-size="12" font-weight="600" letter-spacing="1.4">YOURS THE DAY IT SHIPS</text>
+              </svg>
+            )}
+            {p.art === "crm" && (
+              <svg viewBox="0 0 400 300" class="w-full" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="120" y="140" width="110" height="90" rx="14" fill="var(--color-navy-700)" stroke="var(--color-teal)" stroke-width="3" />
+                <path d="M143 140 v-24 a32 32 0 0 1 64 0 v24" stroke="var(--color-teal)" stroke-width="3" />
+                <circle cx="175" cy="178" r="9" fill="var(--color-gold)" />
+                <line x1="175" y1="187" x2="175" y2="205" stroke="var(--color-gold)" stroke-width="6" />
+                <circle cx="305" cy="95" r="17" stroke="var(--color-gold)" stroke-width="3" />
+                <line x1="305" y1="112" x2="305" y2="150" stroke="var(--color-gold)" stroke-width="3" />
+                <line x1="305" y1="130" x2="318" y2="130" stroke="var(--color-gold)" stroke-width="3" />
+                <line x1="305" y1="142" x2="318" y2="142" stroke="var(--color-gold)" stroke-width="3" />
+                <text x="120" y="262" fill='var(--color-slate-300)' font-family='var(--font-sans)' font-size="12" font-weight="600" letter-spacing="1.4">NO SEATS · NO RENEWALS</text>
+              </svg>
+            )}
+            {p.art === "mcp" && (
+              <svg viewBox="0 0 400 300" class="w-full" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="180" y="28" width="160" height="46" rx="12" fill="var(--color-navy-700)" stroke="var(--color-slate-300)" stroke-width="2" />
+                <text x="196" y="56" fill="var(--color-paper)" font-family="var(--font-sans)" font-size="13" font-weight="600">Blue kurtis, size M?</text>
+                <rect x="60" y="92" width="200" height="52" rx="12" stroke="var(--color-teal)" stroke-width="3" />
+                <text x="78" y="113" fill="var(--color-paper)" font-family="var(--font-sans)" font-size="13" font-weight="600">14 in stock</text>
+                <path d="M232 118 l6 6 l11 -12" stroke="var(--color-gold)" stroke-width="2.5" />
+                <path d="M242 118 l6 6 l11 -12" stroke="var(--color-gold)" stroke-width="2.5" />
+                <line x1="200" y1="144" x2="200" y2="196" stroke="var(--color-teal)" stroke-width="2" stroke-dasharray="5 5" />
+                <ellipse cx="200" cy="210" rx="58" ry="14" stroke="var(--color-teal)" stroke-width="3" />
+                <path d="M142 210 v34 a58 14 0 0 0 116 0 v-34" stroke="var(--color-teal)" stroke-width="3" />
+                <text x="60" y="278" fill='var(--color-slate-300)' font-family='var(--font-sans)' font-size="12" font-weight="600" letter-spacing="1.4">TELEGRAM · YOUR LIVE DATA</text>
+              </svg>
+            )}
+          </div>
+
+          <div class:list={["reveal", i % 2 === 1 && "md:order-1"]}>
+            <p class="font-display text-label font-bold uppercase text-teal-400">{p.n}</p>
+            <h3 class="mt-4 font-display text-h3 font-semibold">{p.title}</h3>
+            <p class="mt-3 max-w-md text-slate-300">{p.body}</p>
+            <p class="mt-5 font-display text-h2 font-semibold tracking-tight text-gold">{p.stat}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <p class="reveal mt-16 text-center font-display text-h3 font-semibold text-paper">
+    {products.closing}
+  </p>
+</Section>

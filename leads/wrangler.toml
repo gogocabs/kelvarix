@@ -10,7 +10,7 @@ database_name = "kelvarix-leads-db"
 database_id   = "bdcd7566-6abd-4d7a-95a3-5174bc968d0d"
 
 [vars]
-ALLOWED_ORIGINS = "https://kelvarix.in,https://www.kelvarix.in,https://kelvarix.admin-yaazh-ai.workers.dev"
+ALLOWED_ORIGINS = "https://kelvarix.in,https://www.kelvarix.in,https://kelvarix.admin-yaazh-ai.workers.dev,http://localhost:4321,http://localhost:4322,http://127.0.0.1:4321,http://127.0.0.1:4322"
 
 # Secrets (never in git — set via `wrangler secret put --config leads/wrangler.toml`):
 #   TELEGRAM_BOT_TOKEN   BotFather token for @kelvarix_lead_bot

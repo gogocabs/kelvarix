@@ -3,8 +3,8 @@
 export const hero = {
   status: "Agents on shift",
   eyebrow: "AI operations studio",
-  headline: ["Your business,", "run by Kelvarix agents."],
-  lead: "Kelvarix agents absorb the busywork — the follow-ups, the chasing, the copy-paste — and do it inside the tools you already use. Ten desks of chaos, managed automatically.",
+  headline: ["From manual workflow to", "full automation on your own infrastructure."],
+  lead: "We build the agents that run your business. They follow up, chase, reconcile and report — inside the tools you already use. You handle business. We handle your workflows.",
   primaryCta: "Map my busiest workflow",
   secondaryCta: "See what it takes over",
   footnote: "One 30-minute call · 10× your business improvement",
@@ -20,9 +20,39 @@ export const channels = [
   "Reports",
 ] as const;
 
+/** Things we build that the client owns — the "own your infrastructure" section. */
+export const products = {
+  eyebrow: "Own your infrastructure",
+  heading: "Stop renting your software. Start owning it.",
+  closing: "You handle business. We handle your workflows.",
+  items: [
+    {
+      n: "01",
+      art: "rebuild",
+      title: "Website & digital rebuild",
+      body: "We tear down what isn't converting and rebuild it clean, fast and shipped in weeks. The code is yours the day it ships.",
+      stat: "2× conversion",
+    },
+    {
+      n: "02",
+      art: "crm",
+      title: "Your own CRM",
+      body: "Modelled around how you actually sell — not a generic tool you bend to fit. One build cost. No seats, no renewals, no lock-in, ever.",
+      stat: "Pay once, own forever",
+    },
+    {
+      n: "03",
+      art: "mcp",
+      title: "Your own MCP",
+      body: "Text your stock, your leads, your numbers on Telegram and get answers in seconds — like briefing an employee who never sleeps.",
+      stat: "Answers in seconds",
+    },
+  ],
+} as const;
+
 export const operations = [
   { icon: "mail",         pain: "Leads sitting unread till Monday",       outcome: "Every enquiry scored, routed and replied in seconds",                       stat: "<60s response"    },
-  { icon: "calendar",     pain: "Chasing follow-ups and bookings",        outcome: "Agent follows up, books the calendar, logs it in your CRM",                stat: "0 leads dropped"  },
+  { icon: "calendar",     pain: "Chasing follow-ups and bookings",        outcome: "Your agent follows up, books the calendar, logs it in your CRM",             stat: "0 leads dropped"  },
   { icon: "phone",        pain: "Calls with no notes or next step",       outcome: "Calls answered, transcribed, requirements extracted",                       stat: "100% captured"    },
   { icon: "file-text",    pain: "Invoices generated and chased by hand",  outcome: "Auto-generated, sent, reminded and reconciled",                            stat: "−80% admin hours" },
   { icon: "message",      pain: "WhatsApp inbox chaos",                   outcome: "Intent classified — auto-replied or escalated with context",                stat: "24/7 coverage"    },
@@ -31,10 +61,8 @@ export const operations = [
   { icon: "bar-chart",    pain: "No idea what the numbers say",           outcome: "A plain-English daily digest — risks flagged, wins listed",                stat: "1 glance / day"   },
   { icon: "credit-card",  pain: "Paying per invoice on a SaaS tool",      outcome: "Custom invoice system built to your exact workflow, owned by you",         stat: "−70% tool cost"   },
   { icon: "mic",          pain: "Call recordings never analysed",         outcome: "AI extracts insights, trends and actions from every recording",             stat: "100% analysed"    },
-  { icon: "database",     pain: "Paying for a CRM that doesn't fit",      outcome: "Custom CRM built to your data model — no seats, no lock-in",               stat: "−60% CRM cost"    },
-  { icon: "trending-up",  pain: "Website not converting visitors",        outcome: "Clean, fast, conversion-optimised redesign — shipped in weeks",             stat: "2× conversion"    },
   { icon: "search",       pain: "SEO / GEO / AEO flying blind",           outcome: "Automated system tracks rankings and reports changes daily",                stat: "0 blind spots"    },
-  { icon: "eye",          pain: "Competitor research done by hand",       outcome: "Agent monitors competitors and delivers structured reports automatically",  stat: "0 manual scans"   },
+  { icon: "eye",          pain: "Competitor research done by hand",       outcome: "Your agent monitors competitors and delivers structured reports automatically", stat: "0 manual scans"   },
 ] as const;
 
 export const steps = [
@@ -45,13 +73,13 @@ export const steps = [
   },
   {
     n: "02",
-    title: "We map the highest-ROI bottleneck",
+    title: "We map the highest-ROI bottleneck — and what you keep owning.",
     text: "You get a written blueprint: what the agent handles, what it escalates, and the KPI we'll be judged on.",
   },
   {
     n: "03",
-    title: "Your agent goes live in weeks",
-    text: "Wired into your tools, tested on real cases, reporting to a dashboard you can read in one glance.",
+    title: "Your agents go live on your infra in weeks",
+    text: "Built, wired into your tools, tested on real cases — then handed over with reporting you read in one glance.",
   },
 ] as const;
 
@@ -111,6 +139,10 @@ export const faqs = [
     a: "No. Chatbots answer questions when prompted. Our agents own a job: they watch your inbox, calendar and CRM, take action across tools, and report back — around the clock.",
   },
   {
+    q: "Is Kelvarix itself an AI agent?",
+    a: "No — we're the studio that builds, wires and hands you the agent. It runs on your infrastructure, inside the tools you already use. Not a black box you rent from us.",
+  },
+  {
     q: "What if the agent gets something wrong?",
     a: "Every agent ships with explicit escalation rules: anything sensitive, uncertain or out-of-scope goes to a human with full context. You set the boundaries in the blueprint.",
   },
@@ -123,6 +155,10 @@ export const faqs = [
     a: "Focused builds go live in weeks. We agree one measurable KPI up front (response time, qualified leads, hours saved) and prove ROI on one workflow before anything scales.",
   },
   {
+    q: "Do I own what you build?",
+    a: "Yes. One build cost, your accounts, your code, your data. No subscription to us, no lock-in — ever. Your systems run in your own Cloudflare account, under your control.",
+  },
+  {
     q: "How much does it cost?",
     a: "Fixed-scope pricing agreed before we build — no hourly billing, no surprises. The number depends on workflow and integrations, quoted after the free mapping call.",
   },
@@ -131,7 +167,7 @@ export const faqs = [
 export const contact = {
   eyebrow: "Start here",
   heading: "Bring us your busiest workflow.",
-  body: "Tell us how work gets done today. We'll reply within 24 hours with honest first thoughts — even if the answer is \"don't automate this yet.\"",
+  body: "Tell us how work gets done today. We'll reply within 24 hours with honest first thoughts on your busiest workflow — even if the answer is 'don't automate this yet.'",
   whatsappCta: "Chat on WhatsApp",
   whatsappImmediate: "For immediate start — fastest on WhatsApp.",
 } as const;
