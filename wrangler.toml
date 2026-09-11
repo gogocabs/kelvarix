@@ -2,10 +2,18 @@ name            = "kelvarix"
 compatibility_date = "2025-09-06"
 account_id      = "12d260e703bb79513000cb98db619cb8"
 workers_dev     = true
+main            = "src/worker.js"
 
 [assets]
 directory           = "./dist"
+binding             = "ASSETS"
 not_found_handling  = "404-page"
+run_worker_first    = ["/api/*"]
+
+[vars]
+LEADS_API = "https://kelvarix-leads.admin-yaazh-ai.workers.dev"
+
+# Secrets (wrangler secret put, never git): PROXY_SECRET (shared with kelvarix-leads)
 
 # Serve on the apex domain — zone must be active in the account above
 [[routes]]
