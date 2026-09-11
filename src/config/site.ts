@@ -22,6 +22,7 @@ export const site = {
   whatsappDisplay: "+91 82207 69919",
   email: "enquiry@kelvarix.in",
   leadsApi: "https://kelvarix-leads.admin-yaazh-ai.workers.dev",
+  gaId: "G-DB5YTF51Y2",
 } as const;
 
 export const navLinks = [

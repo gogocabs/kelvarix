@@ -16,10 +16,10 @@ import { contact } from "../../config/content";
       <p class="mt-5 max-w-md text-slate-300">{contact.body}</p>
 
       <div class="mt-9 flex flex-wrap gap-3">
-        <Button href={site.whatsapp} variant="primary" external>
+        <Button href={site.whatsapp} variant="primary" external track="contact_whatsapp">
           {contact.whatsappCta}
         </Button>
-        <Button href={`mailto:${site.email}`} variant="ghost-dark">
+        <Button href={`mailto:${site.email}`} variant="ghost-dark" track="contact_mailto">
           {site.email}
         </Button>
       </div>
@@ -95,6 +95,14 @@ import { contact } from "../../config/content";
             10-digit mobile number, no OTP needed.
           </p>
         </div>
+        <Field
+          name="email"
+          type="email"
+          label="Email (optional)"
+          placeholder="you@company.com"
+          autocomplete="email"
+          maxlength={254}
+        />
         <Field
           name="message"
           type="textarea"
@@ -196,6 +204,11 @@ import { contact } from "../../config/content";
     if (e.key === "Escape" && !modal?.classList.contains("hidden")) closeModal();
   });
 
+  const track = (name) => {
+    if (typeof window.trackEvent === "function") window.trackEvent(name);
+  };
+  form?.addEventListener("input", () => track("form_start"), { once: true });
+
   const showNote = (text, ok) => {
     if (!note) return;
     note.textContent = text;
@@ -246,6 +259,7 @@ import { contact } from "../../config/content";
 
     // Phone is required: India (+91) needs exactly 10 digits,
     // other country codes skip the length check (no OTP flow).
+    // Email is optional: validated only when filled.
     const ccDigits = get("country_code").replace(/\D/g, "");
     const phoneDigits = get("phone").replace(/\D/g, "");
     let phoneFull = "";
@@ -262,6 +276,11 @@ import { contact } from "../../config/content";
       }
       phoneFull = `+${ccDigits} ${phoneDigits}`;
     }
+    const emailVal = get("email");
+    if (emailVal !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal)) {
+      showNote("Please enter a valid email address.", false);
+      return;
+    }
 
     submitBtn?.setAttribute("disabled", "");
     showNote("Sending…");
@@ -273,6 +292,7 @@ import { contact } from "../../config/content";
         body: JSON.stringify({
           name: get("name"),
           business: get("business"),
+          email: emailVal,
           phone: phoneFull,
           message: get("message"),
           company_website: get("company_website"),
@@ -286,9 +306,11 @@ import { contact } from "../../config/content";
           showNote(
             fields.includes("message")
               ? "Please tell us a little more — a sentence or two about what's eating your week."
-              : fields.includes("phone")
-                ? "Please enter a valid 10-digit mobile number."
-                : `Please check the highlighted fields (${fields.join(", ") || "form"}) and try again.`,
+                : fields.includes("phone")
+                  ? "Please enter a valid 10-digit mobile number."
+                  : fields.includes("email")
+                    ? "Please enter a valid email address."
+                    : `Please check the highlighted fields (${fields.join(", ") || "form"}) and try again.`,
             false,
           );
           return;
@@ -297,10 +319,12 @@ import { contact } from "../../config/content";
       }
       target.reset();
       note?.classList.add("hidden");
+      track("form_submit_success");
       openModal();
     } catch {
       // Offline/API down: hand off to the visitor's mail client or WhatsApp.
-      showNote("");
+      track("form_submit_fallback");
+      note?.classList.remove("hidden");
       const waBase = String(whatsapp).split("?")[0];
       const wa = `${waBase}?text=${encodeURIComponent(
         `Hi Kelvarix, I'm ${get("name")} (${get("country_code")} ${get("phone")}). ${get("message")}`,

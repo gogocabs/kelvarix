@@ -93,6 +93,20 @@ const jsonLd = {
     />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- GA4: loads only on production hosts so dev/staging never pollutes stats. -->
+    <script is:inline define:vars={{ gaId: site.gaId }}>
+      if (/(^|\.)kelvarix\.in$/.test(location.hostname)) {
+        var s = document.createElement("script");
+        s.async = true;
+        s.src = "https://www.googletagmanager.com/gtag/js?id=" + gaId;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag("js", new Date());
+        window.gtag("config", gaId);
+      }
+    </script>
   </head>
 
   <body>
@@ -104,6 +118,39 @@ const jsonLd = {
     </a>
 
     <slot />
+
+    <script is:inline>
+      // Analytics helpers: no-ops until GA4 loads (prod hosts only).
+      // Never send PII — event names + labels only.
+      window.trackEvent = function (name, params) {
+        if (typeof window.gtag === "function") window.gtag("event", name, params || {});
+      };
+      document.addEventListener("click", function (e) {
+        var el = e.target.closest ? e.target.closest("[data-track]") : null;
+        if (!el) return;
+        window.trackEvent(el.getAttribute("data-track"), { label: el.getAttribute("data-label") || "" });
+      });
+      (function () {
+        var fired = {};
+        var check = function () {
+          var max = document.documentElement.scrollHeight - innerHeight;
+          if (max <= 0) return;
+          var pct = Math.round((scrollY / max) * 100);
+          [25, 50, 75, 90].forEach(function (t) {
+            if (pct >= t && !fired[t]) {
+              fired[t] = true;
+              window.trackEvent("scroll_depth", { percent: t });
+            }
+          });
+        };
+        var ticking = false;
+        addEventListener("scroll", function () {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(function () { check(); ticking = false; });
+        }, { passive: true });
+      })();
+    </script>
 
     <script>
       // Reveal-on-scroll. Elements already marked `in` (above the fold) are
